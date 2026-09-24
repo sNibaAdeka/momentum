@@ -11,7 +11,6 @@ export const CT_SIZE = 256
 export const CT_SLICES = 28
 export const CT_FOV_MM = 220
 export const CT_THICKNESS_MM = 5
-export const PIXEL_MM = CT_FOV_MM / CT_SIZE
 
 export interface CtSlice {
   index: number
@@ -31,7 +30,7 @@ const inEllipse = (u: number, v: number, cx: number, cy: number, ax: number, ay:
 }
 const bell = (x: number) => Math.exp(-x * x)
 
-export function sliceZ(index: number) {
+function sliceZ(index: number) {
   return 0.16 + (0.78 * index) / (CT_SLICES - 1)
 }
 
@@ -188,19 +187,4 @@ export function paintSlice(img: ImageData, slice: CtSlice, win: Window, maskAmou
     d[o + 2] = b
     d[o + 3] = 255
   }
-}
-
-/** Reported values are the product's reference case; per-slice areas are scaled so they sum to it. */
-export const REFERENCE = {
-  volumeMl: 32.8,
-  confidence: 97.4,
-  seconds: 18,
-  location: 'MCA / M2',
-}
-
-export function sliceAreaCm2(slice: CtSlice, totalMaskPx: number) {
-  if (!totalMaskPx) return 0
-  const volumeMm3 = REFERENCE.volumeMl * 1000
-  const share = slice.maskCount / totalMaskPx
-  return (share * volumeMm3) / CT_THICKNESS_MM / 100
 }

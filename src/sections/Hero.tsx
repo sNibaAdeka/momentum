@@ -126,13 +126,12 @@ export function Hero() {
           </motion.span>
         </h1>
         <motion.p className="lead hero__lead" {...item(3)}>
-          Momentum анализирует КТ и МРТ, выделяет зону поражения и формирует понятный отчёт, пока пациент ещё находится в
-          аппарате.
+          Momentum находит инсульт на КТ и МРТ и отдаёт врачу отчёт, пока пациент ещё в аппарате.
         </motion.p>
         <motion.div className="hero__ctas" {...item(4)}>
           <LiquidMetalButton href="#contact" label="Запросить демо" />
-          <MagneticButton href="#how" variant="ghost">
-            Как это работает
+          <MagneticButton href="#demo" variant="ghost">
+            Попробовать демо
           </MagneticButton>
         </motion.div>
         <motion.p className="hero__meta" {...item(5)}>

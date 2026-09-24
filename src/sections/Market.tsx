@@ -94,7 +94,7 @@ export function Market() {
       <div className="wrap market__grid">
         <div className="market__copy">
           <ScanReveal>
-            <p className="label"><b>06</b> Рынок</p>
+            <p className="label"><b>05</b> Рынок</p>
             <h2 id="market-title" className="h2"><span>Рынок растёт быстрее,</span><span className="accent-i">чем очередь на описание.</span></h2>
           </ScanReveal>
           <dl className="market__list">
@@ -115,7 +115,7 @@ export function Market() {
             ))}
           </dl>
           <p className="market__geo">
-            Разработано в Казахстане. Следующие рынки — Южная Корея, Саудовская Аравия, Китай, Евросоюз и США.
+            Старт в Казахстане, дальше — Корея, Саудовская Аравия, Китай, ЕС и США.
           </p>
           <p className="source">World Stroke Organization · MarketsAndMarkets, Stroke AI Market Report</p>
         </div>

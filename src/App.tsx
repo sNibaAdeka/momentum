@@ -1,13 +1,11 @@
 import { Nav } from './components/Nav'
 import { Hero } from './sections/Hero'
 import { Urgency } from './sections/Urgency'
-import { PatientRoute } from './sections/PatientRoute'
-import { Pipeline } from './sections/Pipeline'
-import { Demo } from './sections/demo/Demo'
-import { Impact } from './sections/Impact'
+import { How } from './sections/How'
+import { Workstation } from './sections/demo/Workstation'
+import { Effect } from './sections/Effect'
 import { Market } from './sections/Market'
 import { Pricing } from './sections/Pricing'
-import { Principles } from './sections/Principles'
 import { FinalCta } from './sections/FinalCta'
 import { Footer } from './sections/Footer'
 
@@ -21,13 +19,11 @@ export default function App() {
       <main id="main">
         <Hero />
         <Urgency />
-        <PatientRoute />
-        <Pipeline />
-        <Demo />
-        <Impact />
+        <How />
+        <Workstation />
+        <Effect />
         <Market />
         <Pricing />
-        <Principles />
         <FinalCta />
       </main>
       <Footer />

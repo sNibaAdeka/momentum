@@ -1,4 +1,4 @@
-import { CT_SIZE, CT_SLICES, paintSlice, synthSlice, WINDOWS, type CtSlice, type Window } from './ctSynth'
+import { CT_SIZE, paintSlice, synthSlice, WINDOWS, type CtSlice, type Window } from './ctSynth'
 
 const slices = new Map<number, CtSlice>()
 const urls = new Map<string, string>()
@@ -10,19 +10,6 @@ export function getSlice(index: number): CtSlice {
     slices.set(index, s)
   }
   return s
-}
-
-export function isSliceReady(index: number) {
-  return slices.has(index)
-}
-
-let totalMask = 0
-export function totalMaskPx() {
-  if (totalMask) return totalMask
-  let sum = 0
-  for (let i = 0; i < CT_SLICES; i++) sum += getSlice(i).maskCount
-  totalMask = sum
-  return sum
 }
 
 /** PNG data URL of a windowed slice, cached. */
@@ -39,18 +26,4 @@ export function sliceUrl(index: number, win: Window = WINDOWS[0], mask = 0): str
   const url = c.toDataURL('image/png')
   urls.set(key, url)
   return url
-}
-
-/** Index of the slice with the largest lesion cross-section. */
-export function keySliceIndex() {
-  let best = 0
-  let bestCount = -1
-  for (let i = 0; i < CT_SLICES; i++) {
-    const n = getSlice(i).maskCount
-    if (n > bestCount) {
-      best = i
-      bestCount = n
-    }
-  }
-  return best
 }

@@ -12,6 +12,8 @@ export default defineConfig(({ mode }) => {
     base: './',
     plugins: [react(), tailwindcss(), ...(single ? [viteSingleFile({ removeViteModuleLoader: true })] : [])],
     resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+    // scan only the app entry (dist-single/index.html would otherwise be crawled for deps)
+    optimizeDeps: { entries: ['index.html'], include: ['three', 'fflate', 'dicom-parser', 'nifti-reader-js'] },
     build: {
       outDir: single ? 'dist-single' : 'dist',
       target: 'es2020',

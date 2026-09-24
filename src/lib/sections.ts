@@ -8,12 +8,10 @@ export interface SectionMeta {
 export const SECTIONS: SectionMeta[] = [
   { id: 'top', label: 'Первый экран' },
   { id: 'urgency', label: 'Срочность' },
-  { id: 'route', label: 'Маршрут пациента' },
   { id: 'how', label: 'Как работает', nav: true },
   { id: 'demo', label: 'Демо', nav: true },
-  { id: 'impact', label: 'Эффект', nav: true },
+  { id: 'impact', label: 'Эффект' },
   { id: 'market', label: 'Рынок', nav: true },
   { id: 'pricing', label: 'Тарифы', nav: true },
-  { id: 'principles', label: 'Принципы' },
   { id: 'contact', label: 'Запрос демо' },
 ]

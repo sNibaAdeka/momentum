@@ -172,51 +172,6 @@ export function Counter({
   )
 }
 
-/* ---------- Film you can pick up: lifts off the viewbox toward the cursor ---------- */
-
-export function TiltCard({
-  children,
-  className = '',
-  tilt = 4,
-  as = 'div',
-}: {
-  children: ReactNode
-  className?: string
-  tilt?: number
-  as?: 'div' | 'article' | 'li'
-}) {
-  const reduce = useReducedMotion()
-  const rx = useMotionValue(0)
-  const ry = useMotionValue(0)
-  const lift = useMotionValue(0)
-  const srx = useSpring(rx, { stiffness: 220, damping: 22 })
-  const sry = useSpring(ry, { stiffness: 220, damping: 22 })
-  const sl = useSpring(lift, { stiffness: 280, damping: 22 })
-  const onMove = (e: ReactPointerEvent<HTMLElement>) => {
-    if (reduce || e.pointerType !== 'mouse') return
-    const r = e.currentTarget.getBoundingClientRect()
-    rx.set((0.5 - (e.clientY - r.top) / r.height) * tilt)
-    ry.set(((e.clientX - r.left) / r.width - 0.5) * tilt * 1.3)
-    lift.set(-6)
-  }
-  const onLeave = () => {
-    rx.set(0)
-    ry.set(0)
-    lift.set(0)
-  }
-  const Tag = as === 'article' ? motion.article : as === 'li' ? motion.li : motion.div
-  return (
-    <Tag
-      className={className}
-      style={{ rotateX: srx, rotateY: sry, y: sl, transformPerspective: 1000 }}
-      onPointerMove={onMove}
-      onPointerLeave={onLeave}
-    >
-      {children}
-    </Tag>
-  )
-}
-
 /* ---------- Viewbox + film parts ---------- */
 
 export function Lightbox({ children, className = '', flicker = false }: { children: ReactNode; className?: string; flicker?: boolean }) {
@@ -259,18 +214,6 @@ export function Clips() {
 /* ---------- Grease pencil ---------- */
 
 /** Hand-drawn loop. `drawn` animates the stroke; pathLength=1 keeps the dash math size-independent. */
-export function PencilLoop({ drawn, className = '' }: { drawn: boolean; className?: string }) {
-  return (
-    <svg className={`pencil-loop ${drawn ? 'is-drawn' : ''} ${className}`} viewBox="0 0 220 140" aria-hidden="true">
-      <path
-        className="pencil"
-        pathLength={1}
-        d="M40 88C22 62 44 26 102 20c58-6 104 18 98 56-5 34-58 50-108 46C44 118 14 96 26 66c8-20 40-34 84-36"
-      />
-    </svg>
-  )
-}
-
 export function PencilUnderline({ drawn, className = '' }: { drawn: boolean; className?: string }) {
   return (
     <svg className={`pencil-under ${drawn ? 'is-drawn' : ''} ${className}`} viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true">
@@ -284,8 +227,4 @@ export function useDrawn<T extends Element>(margin = '0px 0px -20% 0px') {
   const ref = useRef<T>(null)
   const inView = useInView(ref, { once: true, margin: margin as `${number}px ${number}px ${number}px ${number}px` })
   return [ref, inView] as const
-}
-
-export function Grain() {
-  return <div className="grain" aria-hidden="true" />
 }

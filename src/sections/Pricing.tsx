@@ -37,10 +37,10 @@ export function Pricing() {
       <div className="wrap">
         <div className="section-head section-head--split">
           <ScanReveal>
-            <p className="label"><b>07</b> Тарифы</p>
+            <p className="label"><b>06</b> Тарифы</p>
             <h2 id="pricing-title" className="h2"><span>Простые</span><span className="accent-b">тарифы.</span></h2>
           </ScanReveal>
-          <p className="lead">Фиксированная цена в месяц. Начните с Core и подключите интеграцию, когда будете готовы.</p>
+          <p className="lead">Фиксированная цена в месяц.</p>
         </div>
         <div className="plans">
           {PLANS.map((p, i) => (
