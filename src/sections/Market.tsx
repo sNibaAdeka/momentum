@@ -91,7 +91,6 @@ function GlobeStage() {
 export function Market() {
   return (
     <section id="market" className="section market theme-dark" aria-labelledby="market-title">
-      <div className="beam" aria-hidden="true" />
       <div className="wrap market__grid">
         <div className="market__copy">
           <ScanReveal>

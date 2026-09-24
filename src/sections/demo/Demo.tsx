@@ -137,7 +137,6 @@ export function Demo() {
 
   return (
     <section id="demo" className="section demo theme-dark" aria-labelledby="demo-title">
-      <div className="beam" aria-hidden="true" />
       <div className="wrap">
         <div className="section-head section-head--split">
           <ScanReveal>

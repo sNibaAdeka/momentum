@@ -1,7 +1,6 @@
 import { useId, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Eye, Plus, Stethoscope, Workflow } from 'lucide-react'
-import { MagicCard } from '@/components/ui/magic-card'
 import { ScanReveal, Reveal } from '../components/primitives'
 import { easeIn, easeOut } from '../lib/env'
 
@@ -88,15 +87,13 @@ export function Principles() {
             {PRINCIPLES.map((p, i) => (
               <li key={p.title}>
                 <Reveal delay={i * 0.06}>
-                  <MagicCard gradientColor="rgba(45,68,255,0.06)">
-                    <div className="principle">
+                  <div className="card principle">
                       <span className="principle__icon" aria-hidden="true">
                         <p.icon />
                       </span>
                       <h3 className="h3">{p.title}</h3>
                       <p className="body-dim">{p.text}</p>
-                    </div>
-                  </MagicCard>
+                  </div>
                 </Reveal>
               </li>
             ))}

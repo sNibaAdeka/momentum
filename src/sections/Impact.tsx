@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useInView, useReducedMotion } from 'framer-motion'
 import { Activity } from 'lucide-react'
-import { Counter, LogoMark, ScanReveal } from '../components/primitives'
-import { OrbitingCircles, Ripple } from '@/components/ui/orbiting-circles'
+import { Counter, ScanReveal } from '../components/primitives'
 import { HealthStatCard, type HealthGraphData, type StatData } from '@/components/ui/health-stat-card'
-import { DataSphere } from '../components/DataSphere'
 import { fmtDec, fmtInt, plural } from '../lib/format'
 
 function Prisms() {
@@ -73,30 +71,31 @@ function Clock24() {
           )
         })}
       </svg>
-      <DataSphere size={200} className="clock24__sphere" />
-      <p className="clock24__now-label readout">Сейчас {time} — Momentum на смене</p>
+      <p className="clock24__time num">{time}</p>
+      <p className="clock24__now-label readout">Momentum на смене</p>
     </div>
   )
 }
 
-function Integrations() {
-  const chip = (t: string) => <span className="orbit__chip">{t}</span>
+function Flow() {
+  const nodes = [
+    { x: 60, label: 'КТ / МРТ' },
+    { x: 220, label: 'PACS' },
+    { x: 380, label: 'Momentum', accent: true },
+    { x: 540, label: 'HIS · врач' },
+  ]
   return (
-    <div className="orbit" role="img" aria-label="Momentum в центре маршрута: КТ, МРТ, PACS, HIS и врач">
-      <Ripple mainCircleSize={110} numCircles={4} />
-      <div className="orbit__core">
-        <LogoMark size={40} />
-      </div>
-      <OrbitingCircles radius={92} duration={26} iconSize={56}>
-        {chip('КТ')}
-        {chip('МРТ')}
-      </OrbitingCircles>
-      <OrbitingCircles radius={156} duration={40} reverse iconSize={64}>
-        {chip('PACS')}
-        {chip('HIS')}
-        {chip('Врач')}
-      </OrbitingCircles>
-    </div>
+    <svg viewBox="0 0 600 150" className="flow" role="img" aria-label="Путь исследования: аппарат КТ или МРТ, PACS, Momentum, HIS и врач">
+      <path d="M114 75 H166 M274 75 H326 M434 75 H486" className="flow__line" />
+      {nodes.map((n) => (
+        <g key={n.label} transform={`translate(${n.x} 75)`}>
+          <rect x="-54" y="-24" width="108" height="48" rx="24" className={n.accent ? 'flow__node flow__node--accent' : 'flow__node'} />
+          <text y="5" className="flow__txt">
+            {n.label}
+          </text>
+        </g>
+      ))}
+    </svg>
   )
 }
 
@@ -215,7 +214,7 @@ export function Impact() {
               <p className="icard__figure icard__figure--word">PACS · HIS</p>
               <p className="icard__cap">интеграция в существующий маршрут: без нового окна и лишних кликов</p>
             </div>
-            <Integrations />
+            <Flow />
           </div>
 
           <div className="icard icard--roi">

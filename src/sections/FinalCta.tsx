@@ -6,7 +6,6 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { CheckCircle2, X } from 'lucide-react'
 import { ScanReveal } from '../components/primitives'
 import { LiquidMetalButton } from '../components/ui/liquid-metal-button'
-import { Particles } from '@/components/ui/particles'
 import { PLAN_LABEL, choosePlan, usePlan } from '../lib/planStore'
 import { CT_SIZE, paintSlice, WINDOWS } from '../ct/ctSynth'
 import { getSlice } from '../ct/cache'
@@ -83,7 +82,6 @@ export function FinalCta() {
   return (
     <section id="contact" className="section cta theme-dark" aria-labelledby="cta-title">
       <div className="beam" aria-hidden="true" />
-      <Particles className="section-particles" quantity={70} color="#ffd2c9" />
       <SliceBackdrop />
       <div className="wrap cta__grid">
         <div className="cta__copy">

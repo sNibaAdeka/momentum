@@ -6,20 +6,6 @@ import { FallbackScan } from '../components/FallbackScan'
 import { easeOut, hasWebGL, isCoarsePointer, isLowPower, isNarrow } from '../lib/env'
 import { fmtDec } from '../lib/format'
 import type { BrainSceneHandle, SceneLabel } from '../three/types'
-import { Marquee } from '@/components/ui/marquee'
-import { Clock, FileArchive, FileImage, Hospital, Network, ScanLine, Timer, Waypoints } from 'lucide-react'
-
-const STRIP = [
-  { icon: <FileImage aria-hidden="true" />, label: 'DICOM' },
-  { icon: <ScanLine aria-hidden="true" />, label: 'КТ без контраста' },
-  { icon: <FileArchive aria-hidden="true" />, label: 'NIfTI и ZIP-серии' },
-  { icon: <Network aria-hidden="true" />, label: 'PACS' },
-  { icon: <Hospital aria-hidden="true" />, label: 'HIS' },
-  { icon: <ScanLine aria-hidden="true" />, label: 'МРТ' },
-  { icon: <Timer aria-hidden="true" />, label: '18 секунд на исследование' },
-  { icon: <Clock aria-hidden="true" />, label: 'Работа 24/7' },
-  { icon: <Waypoints aria-hidden="true" />, label: 'Отчёт врачу с разметкой' },
-]
 
 type StageMode = 'loading' | 'webgl' | 'fallback'
 
@@ -129,13 +115,9 @@ export function Hero() {
   const tiltY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [60, 0])
   return (
     <section id="top" className="hero" aria-labelledby="hero-title">
-      <div className="hero__glow" aria-hidden="true" />
       <div className="wrap hero__inner">
-        <motion.p className="spark" {...item(0)}>
-          <span className="spark__ring" aria-hidden="true" />
-          <span className="spark__fill" aria-hidden="true" />
-          <span className="spark__chip">V1.3 BETA</span>
-          <span className="spark__text">AI STROKE DETECTION</span>
+        <motion.p className="label hero__label" {...item(0)}>
+          <b>AI Stroke Detection</b> / V1.3 Beta
         </motion.p>
         <h1 id="hero-title" className="display hero__title">
           <motion.span {...item(1)}>Диагноз за секунды.</motion.span>
@@ -163,7 +145,6 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: easeOut, delay: 0.5 }}
         >
-          <span className="hero__devglow" aria-hidden="true" />
           <div ref={figRef} className="hero__tiltwrap">
           <motion.div className="hero__tilt" style={{ rotateX: tiltX, scale: tiltScale, y: tiltY }}>
           <Lightbox flicker className="hero__box">
@@ -203,27 +184,12 @@ export function Hero() {
           </motion.div>
           </div>
 
-          <div className="hfloat hfloat--l card" aria-hidden="true">
-            <span className="hfloat__dot" />
-            <span>
-              <b>Диагностика, пока пациент ещё в сканере</b>
-              <span className="hfloat__sub">результат через 18 секунд</span>
-            </span>
-          </div>
-          <div className="hfloat hfloat--r card" aria-hidden="true">
-            <span className="hfloat__k">AI confidence</span>
-            <span className="hfloat__v">97,4 %</span>
-            <span className="hfloat__bar">
-              <span />
-            </span>
-          </div>
 
           <figcaption className="hero__caption">
             <span className="serif">Рис. 1.</span> Синтетическое исследование, не данные пациента.
           </figcaption>
         </motion.figure>
       </div>
-      <Marquee items={STRIP} className="hero__strip" />
     </section>
   )
 }

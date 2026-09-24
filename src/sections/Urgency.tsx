@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Counter, PencilUnderline, ScanReveal, Reveal, TiltCard, useDrawn } from '../components/primitives'
+import { Counter, PencilUnderline, ScanReveal, Reveal, useDrawn } from '../components/primitives'
 import { NEURONS_PER_SECOND, useElapsed } from '../lib/clock'
 import { fmtDec, fmtInt } from '../lib/format'
 import { sliceUrl } from '../ct/cache'
-import { MagicCard } from '@/components/ui/magic-card'
-import { Particles } from '@/components/ui/particles'
 
 /* Counts neurons lost since this block scrolled into view — the statistic, made physical. */
 function LiveLoss({ active }: { active: boolean }) {
@@ -49,8 +47,6 @@ export function Urgency() {
   const bg = useSlice(18, seen)
   return (
     <section id="urgency" className="section urg theme-dark" aria-labelledby="urg-title">
-      <div className="beam" aria-hidden="true" />
-      <Particles className="section-particles" quantity={80} color="#c9d2ff" />
       <div className="wrap">
         <div className="section-head section-head--split">
           <ScanReveal>
@@ -67,8 +63,7 @@ export function Urgency() {
 
         <div ref={ref}>
                       <div className="urg__films">
-              <TiltCard as="article" className="urg__film urg__film--main" tilt={3}>
-                <MagicCard>
+              <article className="card urg__film urg__film--main">
                 <div className="urg__inner">
                 {bg && <img className="urg__bg" src={bg} alt="" aria-hidden="true" />}
                 <p className="urg__figure serif">
@@ -79,11 +74,9 @@ export function Urgency() {
                 <LiveLoss active={seen} />
                 <p className="film__source print">Saver J.L., Stroke, 2006</p>
               </div>
-                </MagicCard>
-              </TiltCard>
+              </article>
 
-              <TiltCard as="article" className="urg__film">
-                <MagicCard>
+              <article className="card urg__film">
                 <div className="urg__inner">
                 <div className="urg__row">
                   <p className="urg__figure urg__figure--sm serif">
@@ -94,11 +87,9 @@ export function Urgency() {
                 <p className="urg__caption">пациентов получают лечение позже рекомендованных 60 минут</p>
                 <p className="film__source print">AHA/ASA Guidelines, Acute Ischemic Stroke</p>
               </div>
-                </MagicCard>
-              </TiltCard>
+              </article>
 
-              <TiltCard as="article" className="urg__film">
-                <MagicCard>
+              <article className="card urg__film">
                 <div className="urg__inner">
                 <p className="urg__figure urg__figure--sm serif">
                   <Counter to={890} duration={1.6} format={(n) => `$${fmtInt(n)} млрд`} />
@@ -106,8 +97,7 @@ export function Urgency() {
                 <p className="urg__caption">ежегодная мировая экономическая нагрузка инсульта</p>
                 <p className="film__source print">World Stroke Organization, 2025</p>
               </div>
-                </MagicCard>
-              </TiltCard>
+              </article>
             </div>
         </div>
       </div>
