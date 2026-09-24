@@ -1,0 +1,79 @@
+:root {
+  color-scheme: dark;
+
+  /* reading-room graphite: dark with the blue cast of diagnostic monitors */
+  --void: #05080b;
+  --graphite-900: #090e12;
+  --graphite-800: #0e151b;
+  --graphite-700: #141e26;
+  --graphite-600: #1b2833;
+
+  --line: rgba(164, 196, 222, 0.11);
+  --line-strong: rgba(164, 196, 222, 0.22);
+
+  --bone: #e7edf2;
+  --bone-dim: #9aabb9;
+  --bone-faint: #6f8292;
+
+  --scan: #3d8bff; /* electric blue — the scanner, the machine, the interface */
+  --scan-ink: #031022;
+  --scan-soft: rgba(61, 139, 255, 0.14);
+  --tissue: #3fe0cf; /* cold turquoise — healthy tissue, the network */
+  --tissue-soft: rgba(63, 224, 207, 0.12);
+  --alert: #ff5b4a; /* signal coral — lesion, delay, loss. Never decorative. */
+  --alert-soft: rgba(255, 91, 74, 0.14);
+
+  --glass: rgba(12, 19, 25, 0.56);
+  --glass-strong: rgba(12, 19, 25, 0.82);
+  --glass-edge: rgba(190, 220, 245, 0.14);
+
+  --font-sans: 'Geologica', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --fs-micro: 0.6875rem; /* 11 */
+  --fs-xs: 0.75rem; /* 12 */
+  --fs-sm: 0.875rem; /* 14 */
+  --fs-base: 1.0625rem; /* 17 */
+  --fs-md: 1.1875rem; /* 19 */
+  --fs-lg: 1.375rem; /* 22 */
+  --fs-xl: 1.75rem; /* 28 */
+  --fs-h2: clamp(2.125rem, 1.25rem + 3.3vw, 4.25rem);
+  --fs-display: clamp(2.875rem, 1.2rem + 6.6vw, 7.25rem);
+  --fs-figure: clamp(4rem, 2rem + 9vw, 10.5rem);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 144px;
+
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.55, 0, 0.78, 0.35);
+  --dur-micro: 180ms;
+  --dur-base: 300ms;
+
+  --gutter: 16px;
+  --nav-h: 64px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 32px;
+    --nav-h: 72px;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 48px;
+  }
+}
