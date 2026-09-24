@@ -1,5 +1,4 @@
 import { Nav } from './components/Nav'
-import { ScoutRail } from './components/ScoutRail'
 import { Hero } from './sections/Hero'
 import { Urgency } from './sections/Urgency'
 import { PatientRoute } from './sections/PatientRoute'
@@ -19,7 +18,6 @@ export default function App() {
         Перейти к содержанию
       </a>
       <Nav />
-      <ScoutRail />
       <main id="main">
         <Hero />
         <Urgency />

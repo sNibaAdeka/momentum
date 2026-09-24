@@ -1,11 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { MagneticButton, Counter, Lightbox, Wedge, Clips } from '../components/primitives'
 import { LiquidMetalButton } from '../components/ui/liquid-metal-button'
 import { FallbackScan } from '../components/FallbackScan'
 import { easeOut, hasWebGL, isCoarsePointer, isLowPower, isNarrow } from '../lib/env'
 import { fmtDec } from '../lib/format'
 import type { BrainSceneHandle, SceneLabel } from '../three/types'
+import { Marquee } from '@/components/ui/marquee'
+import { Clock, FileArchive, FileImage, Hospital, Network, ScanLine, Timer, Waypoints } from 'lucide-react'
+
+const STRIP = [
+  { icon: <FileImage aria-hidden="true" />, label: 'DICOM' },
+  { icon: <ScanLine aria-hidden="true" />, label: 'КТ без контраста' },
+  { icon: <FileArchive aria-hidden="true" />, label: 'NIfTI и ZIP-серии' },
+  { icon: <Network aria-hidden="true" />, label: 'PACS' },
+  { icon: <Hospital aria-hidden="true" />, label: 'HIS' },
+  { icon: <ScanLine aria-hidden="true" />, label: 'МРТ' },
+  { icon: <Timer aria-hidden="true" />, label: '18 секунд на исследование' },
+  { icon: <Clock aria-hidden="true" />, label: 'Работа 24/7' },
+  { icon: <Waypoints aria-hidden="true" />, label: 'Отчёт врачу с разметкой' },
+]
 
 type StageMode = 'loading' | 'webgl' | 'fallback'
 
@@ -44,14 +58,15 @@ function VolumeStage() {
     const hasIdle = typeof window.requestIdleCallback === 'function'
     const idleId = hasIdle ? window.requestIdleCallback(start, { timeout: 600 }) : window.setTimeout(start, 120)
 
-    const hero = el.closest('.hero') as HTMLElement | null
     let ticking = false
     const onScroll = () => {
       if (ticking) return
       ticking = true
       requestAnimationFrame(() => {
         ticking = false
-        handle?.setScroll(window.scrollY / (hero?.offsetHeight || window.innerHeight))
+        // 0 while the device is at/below the viewport centre, grows as it scrolls away upward
+        const r = el.getBoundingClientRect()
+        handle?.setScroll(Math.max(0, (window.innerHeight * 0.5 - (r.top + r.height / 2)) / window.innerHeight) * 1.4)
       })
     }
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -103,43 +118,54 @@ const METRICS = [
 export function Hero() {
   const reduce = useReducedMotion()
   const item = (i: number) => ({
-    initial: reduce ? false : { opacity: 0, y: 22 },
+    initial: reduce ? false : { opacity: 0, y: 26 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.55, ease: easeOut, delay: 0.1 + i * 0.08 },
+    transition: { duration: 0.6, ease: easeOut, delay: 0.08 + i * 0.08 },
   })
+  const figRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: figRef, offset: ['start end', 'center center'] })
+  const tiltX = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [26, 0])
+  const tiltScale = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [0.88, 1])
+  const tiltY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [60, 0])
   return (
     <section id="top" className="hero" aria-labelledby="hero-title">
-      <div className="wrap hero__grid">
-        <div className="hero__copy">
-          <motion.p className="hero__tag print" {...item(0)}>
-            <span className="hero__notch" aria-hidden="true" />
-            AI STROKE DETECTION / V1.3 BETA
-          </motion.p>
-          <h1 id="hero-title" className="display hero__title">
-            <motion.span className="hero__line" {...item(1)}>
-              Диагноз <br />
-              за секунды.
-            </motion.span>
-            <motion.span className="hero__line coral" {...item(2)}>
-              Не за часы.
-            </motion.span>
-          </h1>
-          <motion.p className="lead" {...item(3)}>
-            Momentum анализирует КТ и МРТ, выделяет зону поражения и формирует понятный отчёт, пока пациент ещё находится в
-            аппарате.
-          </motion.p>
-          <motion.div className="hero__ctas" {...item(4)}>
-            <LiquidMetalButton href="#contact" label="Запросить демо" />
-            <MagneticButton href="#how" variant="ghost">
-              Как это работает
-            </MagneticButton>
-          </motion.div>
-          <motion.p className="hero__meta" {...item(5)}>
-            PACS / HIS · результат за секунды · работа 24/7
-          </motion.p>
-        </div>
+      <div className="hero__glow" aria-hidden="true" />
+      <div className="wrap hero__inner">
+        <motion.p className="spark" {...item(0)}>
+          <span className="spark__ring" aria-hidden="true" />
+          <span className="spark__fill" aria-hidden="true" />
+          <span className="spark__chip">V1.3 BETA</span>
+          <span className="spark__text">AI STROKE DETECTION</span>
+        </motion.p>
+        <h1 id="hero-title" className="display hero__title">
+          <motion.span {...item(1)}>Диагноз за секунды.</motion.span>
+          <motion.span className="accent-i hero__accent" {...item(2)}>
+            Не за часы.
+          </motion.span>
+        </h1>
+        <motion.p className="lead hero__lead" {...item(3)}>
+          Momentum анализирует КТ и МРТ, выделяет зону поражения и формирует понятный отчёт, пока пациент ещё находится в
+          аппарате.
+        </motion.p>
+        <motion.div className="hero__ctas" {...item(4)}>
+          <LiquidMetalButton href="#contact" label="Запросить демо" />
+          <MagneticButton href="#how" variant="ghost">
+            Как это работает
+          </MagneticButton>
+        </motion.div>
+        <motion.p className="hero__meta" {...item(5)}>
+          PACS / HIS · результат за секунды · работа 24/7
+        </motion.p>
 
-        <figure className="hero__fig">
+        <motion.figure
+          className="hero__fig"
+          initial={reduce ? false : { opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: easeOut, delay: 0.5 }}
+        >
+          <span className="hero__devglow" aria-hidden="true" />
+          <div ref={figRef} className="hero__tiltwrap">
+          <motion.div className="hero__tilt" style={{ rotateX: tiltX, scale: tiltScale, y: tiltY }}>
           <Lightbox flicker className="hero__box">
             <div className="film hero__film">
               <Clips />
@@ -174,12 +200,30 @@ export function Hero() {
               </p>
             </div>
           </Lightbox>
+          </motion.div>
+          </div>
+
+          <div className="hfloat hfloat--l card" aria-hidden="true">
+            <span className="hfloat__dot" />
+            <span>
+              <b>Диагностика, пока пациент ещё в сканере</b>
+              <span className="hfloat__sub">результат через 18 секунд</span>
+            </span>
+          </div>
+          <div className="hfloat hfloat--r card" aria-hidden="true">
+            <span className="hfloat__k">AI confidence</span>
+            <span className="hfloat__v">97,4 %</span>
+            <span className="hfloat__bar">
+              <span />
+            </span>
+          </div>
+
           <figcaption className="hero__caption">
-            <span className="serif">Рис. 1.</span> Диагностика, пока пациент ещё в сканере. Синтетическое исследование, не данные
-            пациента.
+            <span className="serif">Рис. 1.</span> Синтетическое исследование, не данные пациента.
           </figcaption>
-        </figure>
+        </motion.figure>
       </div>
+      <Marquee items={STRIP} className="hero__strip" />
     </section>
   )
 }

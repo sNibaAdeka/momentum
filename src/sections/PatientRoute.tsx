@@ -86,9 +86,8 @@ export function PatientRoute() {
         <div className="wrap">
           <div className="section-head section-head--split route__head">
             <ScanReveal>
-              <h2 id="route-title" className="h2">
-                Где маршрут теряет минуты
-              </h2>
+              <p className="label"><b>02</b> Маршрут пациента</p>
+            <h2 id="route-title" className="h2"><span>Где маршрут</span><span className="accent-b">теряет минуты.</span></h2>
             </ScanReveal>
             <p className="lead">
               Один и тот же пациент, два маршрута. Прокручивайте страницу: время идёт, а вместе с ним растёт цена каждой

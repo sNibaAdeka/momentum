@@ -298,9 +298,8 @@ export function Pipeline() {
         <div className="wrap">
           <div className="section-head section-head--split how__head">
             <ScanReveal>
-              <h2 id="how-title" className="h2">
-                Как работает Momentum
-              </h2>
+              <p className="label"><b>03</b> Как это работает</p>
+            <h2 id="how-title" className="h2"><span>Как работает</span><span className="accent-b">Momentum.</span></h2>
             </ScanReveal>
             <p className="lead">
               Четыре шага от снимка до врача — 18 секунд на исследование. Прокручивайте: плёнки едут по негатоскопу, как в

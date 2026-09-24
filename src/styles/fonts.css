@@ -1,39 +1,39 @@
-/* Latin + Cyrillic subsets only. Literata — headlines (medical-journal voice), Geologica — text & UI,
-   Caveat — grease-pencil annotations, Martian Mono — DICOM overlays on film. */
+/* Latin + Cyrillic only. Manrope — headlines & text, Literata Italic — accent words,
+   Caveat — grease-pencil notes, Martian Mono — labels and scanner print. */
 
 @font-face {
-  font-family: 'Literata';
+  font-family: 'Manrope';
   font-style: normal;
   font-display: swap;
-  font-weight: 200 900;
-  src: url('../assets/fonts/literata-latin-standard-normal.woff2') format('woff2-variations');
+  font-weight: 200 800;
+  src: url('../assets/fonts/manrope-latin-wght-normal.woff2') format('woff2-variations');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: 'Literata';
+  font-family: 'Manrope';
   font-style: normal;
   font-display: swap;
-  font-weight: 200 900;
-  src: url('../assets/fonts/literata-cyrillic-standard-normal.woff2') format('woff2-variations');
+  font-weight: 200 800;
+  src: url('../assets/fonts/manrope-cyrillic-wght-normal.woff2') format('woff2-variations');
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
 @font-face {
-  font-family: 'Geologica';
-  font-style: normal;
+  font-family: 'Literata';
+  font-style: italic;
   font-display: swap;
-  font-weight: 100 900;
-  src: url('../assets/fonts/geologica-latin-wght-normal.woff2') format('woff2-variations');
+  font-weight: 200 900;
+  src: url('../assets/fonts/literata-latin-standard-italic.woff2') format('woff2-variations');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: 'Geologica';
-  font-style: normal;
+  font-family: 'Literata';
+  font-style: italic;
   font-display: swap;
-  font-weight: 100 900;
-  src: url('../assets/fonts/geologica-cyrillic-wght-normal.woff2') format('woff2-variations');
+  font-weight: 200 900;
+  src: url('../assets/fonts/literata-cyrillic-standard-italic.woff2') format('woff2-variations');
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 

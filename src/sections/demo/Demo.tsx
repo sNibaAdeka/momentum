@@ -136,13 +136,13 @@ export function Demo() {
   const area = done && maskOn ? sliceAreaCm2(getSlice(viewIndex), total) : undefined
 
   return (
-    <section id="demo" className="section demo" aria-labelledby="demo-title">
+    <section id="demo" className="section demo theme-dark" aria-labelledby="demo-title">
+      <div className="beam" aria-hidden="true" />
       <div className="wrap">
         <div className="section-head section-head--split">
           <ScanReveal>
-            <h2 id="demo-title" className="h2">
-              Попробуйте сами
-            </h2>
+            <p className="label"><b>04</b> Демо</p>
+            <h2 id="demo-title" className="h2"><span>Попробуйте</span><span className="accent-i">сами.</span></h2>
           </ScanReveal>
           <div className="demo__intro">
             <p className="lead">

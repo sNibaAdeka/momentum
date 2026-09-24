@@ -1,19 +1,23 @@
 import { useId, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { Plus } from 'lucide-react'
+import { Eye, Plus, Stethoscope, Workflow } from 'lucide-react'
+import { MagicCard } from '@/components/ui/magic-card'
 import { ScanReveal, Reveal } from '../components/primitives'
 import { easeIn, easeOut } from '../lib/env'
 
 const PRINCIPLES = [
   {
+    icon: Stethoscope,
     title: 'Решение за врачом',
     text: 'Momentum подсвечивает находки и расставляет приоритеты. Диагноз и тактику лечения определяет специалист.',
   },
   {
+    icon: Eye,
     title: 'Каждая находка проверяема',
     text: 'Маска поражения ложится на исходную серию: врач видит, на что опирается модель, и может с ней не согласиться.',
   },
   {
+    icon: Workflow,
     title: 'Встраивается, а не заменяет',
     text: 'Результат приходит туда, где врач уже работает, — в PACS и HIS. Без нового окна и лишних кликов.',
   },
@@ -77,16 +81,22 @@ export function Principles() {
       <div className="wrap principles__grid">
         <div>
           <ScanReveal>
-            <h2 id="principles-title" className="h2">
-              Врач принимает решение. Momentum сокращает путь к нему
-            </h2>
+            <p className="label"><b>08</b> Принципы</p>
+            <h2 id="principles-title" className="h2"><span>Врач принимает решение.</span><span className="accent-i">Momentum сокращает путь к нему.</span></h2>
           </ScanReveal>
           <ul className="principles__list">
             {PRINCIPLES.map((p, i) => (
               <li key={p.title}>
-                <Reveal delay={i * 0.06} className="principle">
-                  <h3 className="h3">{p.title}</h3>
-                  <p className="body-dim">{p.text}</p>
+                <Reveal delay={i * 0.06}>
+                  <MagicCard gradientColor="rgba(45,68,255,0.06)">
+                    <div className="principle">
+                      <span className="principle__icon" aria-hidden="true">
+                        <p.icon />
+                      </span>
+                      <h3 className="h3">{p.title}</h3>
+                      <p className="body-dim">{p.text}</p>
+                    </div>
+                  </MagicCard>
                 </Reveal>
               </li>
             ))}

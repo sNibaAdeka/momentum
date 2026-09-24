@@ -1,6 +1,8 @@
-import { useRef, type PointerEvent } from 'react'
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import { useReducedMotion } from 'framer-motion'
 import { ScanReveal, Reveal } from '../components/primitives'
+import { hasWebGL, isCoarsePointer, isNarrow } from '../lib/env'
+import type { GlobeHandle, GlobeLabel } from '../three/GlobeScene'
 
 const TIERS = [
   { id: 'tam', name: 'TAM', value: '$1,759 млрд', growth: 'CAGR 9 %', text: 'Мировой рынок AI-диагностики инсульта' },
@@ -8,43 +10,93 @@ const TIERS = [
   { id: 'som', name: 'SOM', value: '$5 млн', growth: 'цель', text: 'Реалистичная доля на старте' },
 ]
 
-export function Market() {
-  const reduce = useReducedMotion()
-  const px = useMotionValue(0)
-  const py = useMotionValue(0)
-  const pd = useMotionValue(0)
-  const sx = useSpring(px, { stiffness: 120, damping: 20 })
-  const sy = useSpring(py, { stiffness: 120, damping: 20 })
-  const sd = useSpring(pd, { stiffness: 120, damping: 20 })
-  const rotateX = useTransform(sy, (v) => 62 - v * 10)
-  const rotateY = useTransform(sx, (v) => v * 12)
-  const samZ = useTransform(sd, (d) => 36 + d * 46)
-  const somZ = useTransform(sd, (d) => 84 + d * 110)
-  const scene = useRef<HTMLDivElement>(null)
+// other markets are pins on the globe; they are named in the copy next to it
+const PLACES: { id: string; name: string; home?: boolean }[] = [{ id: 'kz', name: 'старт — Казахстан', home: true }]
 
-  const onMove = (e: PointerEvent<HTMLDivElement>) => {
-    if (reduce || e.pointerType !== 'mouse' || !scene.current) return
-    const r = scene.current.getBoundingClientRect()
-    const x = ((e.clientX - r.left) / r.width) * 2 - 1
-    const y = ((e.clientY - r.top) / r.height) * 2 - 1
-    px.set(x)
-    py.set(y)
-    pd.set(Math.max(0, 1 - Math.hypot(x, y)))
-  }
-  const onLeave = () => {
-    px.set(0)
-    py.set(0)
-    pd.set(0)
-  }
+/** 3D globe with TAM / SAM / SOM rings. Loaded only when the section approaches the viewport. */
+function GlobeStage() {
+  const host = useRef<HTMLDivElement>(null)
+  const refs = useRef<Record<string, HTMLDivElement | null>>({})
+  const [ready, setReady] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const reduce = useReducedMotion()
+
+  useEffect(() => {
+    const el = host.current
+    if (!el) return
+    if (!hasWebGL()) {
+      setFailed(true)
+      return
+    }
+    let handle: GlobeHandle | null = null
+    let cancelled = false
+    const section = el.closest('section')
+    const onScroll = () => {
+      if (!section || !handle) return
+      const r = section.getBoundingClientRect()
+      handle.setScroll((window.innerHeight - r.top) / (window.innerHeight + r.height))
+    }
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting || handle) return
+        io.disconnect()
+        import('../three/GlobeScene')
+          .then(({ createGlobe }) => {
+            if (cancelled || !host.current) return
+            const labels: GlobeLabel[] = Object.entries(refs.current)
+              .filter((kv): kv is [string, HTMLDivElement] => !!kv[1])
+              .map(([id, node]) => ({ id, el: node }))
+            handle = createGlobe(host.current, {
+              quality: isCoarsePointer() || isNarrow() ? 'low' : 'high',
+              reducedMotion: !!reduce,
+              labels,
+              onReady: () => !cancelled && setReady(true),
+            })
+            onScroll()
+          })
+          .catch(() => !cancelled && setFailed(true))
+      },
+      { rootMargin: '400px' },
+    )
+    io.observe(el)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      cancelled = true
+      io.disconnect()
+      window.removeEventListener('scroll', onScroll)
+      handle?.dispose()
+    }
+  }, [reduce])
 
   return (
-    <section id="market" className="section market" aria-labelledby="market-title">
+    <div className={`globe${ready ? ' is-ready' : ''}${failed ? ' is-failed' : ''}`} aria-hidden="true">
+      <div ref={host} className="globe__gl" />
+      <div className="globe__labels">
+        {PLACES.map((p) => (
+          <div key={p.id} ref={(n) => { refs.current[p.id] = n }} className={`glabel${p.home ? ' glabel--home' : ''}`}>
+            <span className={p.home ? 'hand' : ''}>{p.name}</span>
+          </div>
+        ))}
+        {TIERS.map((t) => (
+          <div key={t.id} ref={(n) => { refs.current[t.id] = n }} className={`glabel glabel--ring glabel--${t.id}`}>
+            <b>{t.name}</b> {t.value}
+          </div>
+        ))}
+      </div>
+      {failed && <div className="globe__fallback" />}
+    </div>
+  )
+}
+
+export function Market() {
+  return (
+    <section id="market" className="section market theme-dark" aria-labelledby="market-title">
+      <div className="beam" aria-hidden="true" />
       <div className="wrap market__grid">
         <div className="market__copy">
           <ScanReveal>
-            <h2 id="market-title" className="h2">
-              Рынок растёт быстрее, чем очередь на описание
-            </h2>
+            <p className="label"><b>06</b> Рынок</p>
+            <h2 id="market-title" className="h2"><span>Рынок растёт быстрее,</span><span className="accent-i">чем очередь на описание.</span></h2>
           </ScanReveal>
           <dl className="market__list">
             {TIERS.map((t, i) => (
@@ -69,23 +121,7 @@ export function Market() {
           <p className="source">World Stroke Organization · MarketsAndMarkets, Stroke AI Market Report</p>
         </div>
 
-        <div className="market__scene" ref={scene} onPointerMove={onMove} onPointerLeave={onLeave} aria-hidden="true">
-          <motion.div className="rings" style={{ rotateX, rotateY }}>
-            <motion.div className="ring ring--tam">
-              <span className="ring__spin" />
-              <span className="ring__tag">TAM</span>
-            </motion.div>
-            <motion.div className="ring ring--sam" style={{ z: samZ }}>
-              <span className="ring__spin" />
-              <span className="ring__tag">SAM</span>
-            </motion.div>
-            <motion.div className="ring ring--som" style={{ z: somZ }}>
-              <span className="ring__note hand">старт — Казахстан</span>
-              <span className="ring__spin" />
-              <span className="ring__tag">SOM</span>
-            </motion.div>
-          </motion.div>
-        </div>
+        <GlobeStage />
       </div>
     </section>
   )

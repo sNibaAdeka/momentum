@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath, URL } from 'node:url'
 import { viteSingleFile } from 'vite-plugin-singlefile'
 
 // `npm run build`        → dist/        (code-split, for hosting: Netlify / Vercel / nginx)
@@ -8,7 +10,8 @@ export default defineConfig(({ mode }) => {
   const single = mode === 'single'
   return {
     base: './',
-    plugins: [react(), ...(single ? [viteSingleFile({ removeViteModuleLoader: true })] : [])],
+    plugins: [react(), tailwindcss(), ...(single ? [viteSingleFile({ removeViteModuleLoader: true })] : [])],
+    resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
     build: {
       outDir: single ? 'dist-single' : 'dist',
       target: 'es2020',

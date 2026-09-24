@@ -18,11 +18,11 @@ interface LiquidMetalButtonProps {
   disabled?: boolean
   icon?: ReactNode
   className?: string
+  size?: 'md' | 'sm'
 }
 
-const HEIGHT = 52
-
-export function LiquidMetalButton({ label, href, onClick, type = 'button', disabled, icon, className = '' }: LiquidMetalButtonProps) {
+export function LiquidMetalButton({ label, href, onClick, type = 'button', disabled, icon, className = '', size = 'md' }: LiquidMetalButtonProps) {
+  const HEIGHT = size === 'sm' ? 44 : 52
   const [hovered, setHovered] = useState(false)
   const [pressed, setPressed] = useState(false)
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([])
@@ -35,8 +35,8 @@ export function LiquidMetalButton({ label, href, onClick, type = 'button', disab
   const reduce = useRef(false)
 
   useLayoutEffect(() => {
-    if (labelRef.current) setWidth(Math.max(156, Math.ceil(labelRef.current.scrollWidth) + 60))
-  }, [label])
+    if (labelRef.current) setWidth(Math.max(size === 'sm' ? 120 : 156, Math.ceil(labelRef.current.scrollWidth) + (size === 'sm' ? 40 : 60)))
+  }, [label, size])
 
   useEffect(() => {
     const el = shaderRef.current
@@ -109,7 +109,7 @@ export function LiquidMetalButton({ label, href, onClick, type = 'button', disab
   const rippleNodes = ripples.map((r) => <span key={r.id} className="lmb__ripple" style={{ left: r.x, top: r.y }} />)
 
   return (
-    <span className={`lmb${state} ${className}`} style={{ width, height: HEIGHT }}>
+    <span className={`lmb lmb--${size}${state} ${className}`} style={{ width, height: HEIGHT }}>
       <span className="lmb__rim">
         <span ref={shaderRef} className="lmb__shader" />
       </span>

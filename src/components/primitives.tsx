@@ -116,12 +116,15 @@ export function Reveal({
   )
 }
 
-/** Kept for section headings: same fade, slightly slower — headings settle, they don't slide. */
-export function ScanReveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+/** Section headings: label, then each headline line rises into place (transform + opacity only). */
+export function ScanReveal({ children, className = '' }: { children: ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '0px 0px -12% 0px' })
+  const reduce = useReducedMotion()
   return (
-    <Reveal className={className} delay={delay} y={10}>
+    <div ref={ref} className={`lines${inView || reduce ? ' is-in' : ''} ${className}`}>
       {children}
-    </Reveal>
+    </div>
   )
 }
 

@@ -1,0 +1,76 @@
+/*
+ * Tailwind v4 for shadcn-style components (src/components/ui).
+ * Utilities only — no preflight: the site keeps its own reset (base.css, @layer base) and its own tokens.
+ * Layer order lets utilities override the reset, while the site's unlayered component CSS stays authoritative.
+ */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import 'tw-animate-css';
+
+/* shadcn semantic colours → Momentum tokens (they follow light / dark section scopes automatically) */
+@theme inline {
+  --color-background: var(--wall);
+  --color-foreground: var(--paper);
+  --color-card: var(--wall-raised);
+  --color-card-foreground: var(--paper);
+  --color-muted: var(--wall-deep);
+  --color-muted-foreground: var(--paper-dim);
+  --color-primary: var(--scan);
+  --color-primary-foreground: #fff;
+  --color-popover: var(--wall-raised);
+  --color-popover-foreground: var(--paper);
+  --color-border: var(--rule-strong);
+}
+
+@keyframes subtle-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Vetra / Magic UI motion utilities — inline so var(--duration) resolves on the element, not :root */
+@theme inline {
+  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
+  --animate-image-glow: image-glow 6s ease-out 0.6s forwards;
+}
+@keyframes orbit {
+  0% {
+    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
+  }
+  100% {
+    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px))
+      rotate(calc((var(--angle) * -1deg) - 360deg));
+  }
+}
+@keyframes ripple {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+@keyframes image-glow {
+  0% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.74, 0.25, 0.76, 1);
+  }
+  10% {
+    opacity: 0.5;
+    animation-timing-function: cubic-bezier(0.12, 0.01, 0.08, 0.99);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes spark-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

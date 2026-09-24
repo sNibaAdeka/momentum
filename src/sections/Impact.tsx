@@ -1,6 +1,9 @@
-import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { useInView, useReducedMotion } from 'framer-motion'
-import { Counter, ScanReveal } from '../components/primitives'
+import { Activity } from 'lucide-react'
+import { Counter, LogoMark, ScanReveal } from '../components/primitives'
+import { OrbitingCircles, Ripple } from '@/components/ui/orbiting-circles'
+import { HealthStatCard, type HealthGraphData, type StatData } from '@/components/ui/health-stat-card'
 import { DataSphere } from '../components/DataSphere'
 import { fmtDec, fmtInt, plural } from '../lib/format'
 
@@ -76,35 +79,24 @@ function Clock24() {
   )
 }
 
-function Flow() {
-  const reduce = useReducedMotion()
-  const id = useId().replace(/:/g, '')
-  const nodes = [
-    { x: 60, label: 'КТ / МРТ' },
-    { x: 220, label: 'PACS' },
-    { x: 380, label: 'Momentum', accent: true },
-    { x: 540, label: 'HIS · врач' },
-  ]
+function Integrations() {
+  const chip = (t: string) => <span className="orbit__chip">{t}</span>
   return (
-    <svg viewBox="0 0 600 150" className="flow" role="img" aria-label="Путь исследования: аппарат КТ или МРТ, PACS, Momentum, HIS и врач">
-      <path id={`flow-${id}`} d="M60 75 H540" className="flow__line" />
-      {nodes.map((n) => (
-        <g key={n.label} transform={`translate(${n.x} 75)`}>
-          <rect x="-54" y="-24" width="108" height="48" rx="10" className={n.accent ? 'flow__node flow__node--accent' : 'flow__node'} />
-          <text y="5" className="flow__txt">
-            {n.label}
-          </text>
-        </g>
-      ))}
-      {!reduce &&
-        [0, 1.1, 2.2].map((d) => (
-          <circle key={d} r="3.5" className="flow__packet">
-            <animateMotion dur="3.3s" begin={`${d}s`} repeatCount="indefinite">
-              <mpath href={`#flow-${id}`} />
-            </animateMotion>
-          </circle>
-        ))}
-    </svg>
+    <div className="orbit" role="img" aria-label="Momentum в центре маршрута: КТ, МРТ, PACS, HIS и врач">
+      <Ripple mainCircleSize={110} numCircles={4} />
+      <div className="orbit__core">
+        <LogoMark size={40} />
+      </div>
+      <OrbitingCircles radius={92} duration={26} iconSize={56}>
+        {chip('КТ')}
+        {chip('МРТ')}
+      </OrbitingCircles>
+      <OrbitingCircles radius={156} duration={40} reverse iconSize={64}>
+        {chip('PACS')}
+        {chip('HIS')}
+        {chip('Врач')}
+      </OrbitingCircles>
+    </div>
   )
 }
 
@@ -145,15 +137,48 @@ function Roi() {
   )
 }
 
+
+const PANEL_STATS: StatData[] = [
+  { title: 'исследований за сутки', value: 42 },
+  { title: 'среднее время анализа', value: 18, unit: 'с' },
+  { title: 'высокий приоритет', value: 3 },
+]
+const PANEL_BARS: HealthGraphData[] = [
+  { label: '00–03', value: 34, color: '#2d44ff', description: 'Ночная смена: анализ без очереди' },
+  { label: '03–06', value: 22, color: '#2d44ff', description: 'Ночная смена' },
+  { label: '06–09', value: 48, color: '#9aa3a8', description: 'Утро' },
+  { label: '09–12', value: 86, color: '#9aa3a8', description: 'Пик плановых исследований' },
+  { label: '12–15', value: 100, color: '#d8432c', description: 'Пик + 2 приоритетных случая' },
+  { label: '15–18', value: 92, color: '#9aa3a8', description: 'День' },
+  { label: '18–21', value: 70, color: '#9aa3a8', description: 'Вечер' },
+  { label: '21–24', value: 55, color: '#2d44ff', description: 'Ночная смена' },
+]
+
+function DepartmentPanel() {
+  return (
+    <div className="panelwrap">
+      <HealthStatCard
+        headerIcon={<Activity className="h-6 w-6" aria-hidden="true" />}
+        title="Панель отделения"
+        stats={PANEL_STATS}
+        graphData={PANEL_BARS}
+        graphHeight={140}
+        showLegend={false}
+        className="max-w-none"
+      />
+      <p className="source">Загрузка по часам, % от пика. Так выглядит аналитика клиники в тарифе Clinic+. Данные условные.</p>
+    </div>
+  )
+}
+
 export function Impact() {
   return (
     <section id="impact" className="section impact" aria-labelledby="impact-title">
       <div className="wrap">
         <div className="section-head section-head--split">
           <ScanReveal>
-            <h2 id="impact-title" className="h2">
-              Что меняется в клинике
-            </h2>
+            <p className="label"><b>05</b> Эффект</p>
+            <h2 id="impact-title" className="h2"><span>Что меняется</span><span className="accent-b">в клинике.</span></h2>
           </ScanReveal>
           <p className="lead">Быстрее первичная оценка, меньше очередь на описание, одинаковое качество ночью и днём.</p>
         </div>
@@ -190,11 +215,15 @@ export function Impact() {
               <p className="icard__figure icard__figure--word">PACS · HIS</p>
               <p className="icard__cap">интеграция в существующий маршрут: без нового окна и лишних кликов</p>
             </div>
-            <Flow />
+            <Integrations />
           </div>
 
           <div className="icard icard--roi">
             <Roi />
+          </div>
+
+          <div className="icard icard--panel">
+            <DepartmentPanel />
           </div>
         </div>
       </div>

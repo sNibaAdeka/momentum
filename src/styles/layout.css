@@ -252,7 +252,7 @@
   right: 0;
   top: 4.5px;
   height: 1px;
-  background: rgba(20, 24, 27, 0.2);
+  background: rgba(var(--ink-rgb), 0.2);
   transition: background-color var(--dur-micro) var(--ease-out);
 }
 .scout__slice:hover::before {
@@ -546,4 +546,210 @@
   to {
     transform: translateY(92cqh);
   }
+}
+
+
+/* =====================================================================
+   Poster layout (Designthon / CampusTrace language)
+   ===================================================================== */
+
+/* ---------- capsule nav ---------- */
+.nav,
+.nav.is-scrolled {
+  height: auto;
+  padding-top: 12px;
+  background: none;
+  border: 0;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  pointer-events: none;
+}
+.nav__inner {
+  pointer-events: auto;
+  width: min(100% - var(--gutter) * 2, 1200px);
+  height: 58px;
+  padding: 0 7px 0 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid rgba(20, 24, 27, 0.07);
+  box-shadow: 0 12px 34px -14px rgba(16, 24, 32, 0.25);
+}
+.nav__links {
+  margin: 0 auto;
+}
+.nav__link {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.nav__right {
+  margin-left: 0;
+}
+.logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: -0.03em;
+}
+@media (max-width: 1099px) {
+  .nav__right {
+    margin-left: auto;
+  }
+}
+.nav__sheet {
+  inset: calc(var(--nav-h) + 8px) 12px auto;
+  border-radius: 28px;
+  box-shadow: var(--shadow-lift);
+  border: 1px solid var(--rule);
+}
+.nclock__chip {
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+/* ---------- hero, centred ---------- */
+.hero {
+  display: block;
+  min-height: 0;
+  padding-top: calc(var(--nav-h) + clamp(48px, 7vw, 96px));
+  padding-bottom: var(--space-9);
+  text-align: center;
+  isolation: isolate;
+}
+.hero__glow {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  z-index: -1;
+  width: min(1300px, 140vw);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(45, 68, 255, 0.11), rgba(45, 68, 255, 0) 72%);
+  pointer-events: none;
+}
+.hero__inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+}
+.hero__label {
+  margin: 0;
+}
+.hero__title {
+  max-width: 13ch;
+}
+.hero__accent {
+  font-size: 0.9em;
+  line-height: 1;
+  margin-top: 0.04em;
+}
+.hero .lead {
+  margin-inline: auto;
+  max-width: 46ch;
+}
+.hero__ctas {
+  justify-content: center;
+  align-items: center;
+}
+.hero .hero__fig {
+  position: relative;
+  width: min(100%, 980px);
+  margin-top: var(--space-7);
+  text-align: left;
+}
+.hero__film .vstage {
+  aspect-ratio: 16 / 10;
+}
+.hero__caption {
+  margin-top: var(--space-4);
+  text-align: center;
+}
+.hfloat {
+  position: absolute;
+  z-index: 3;
+  padding: 14px 18px;
+  border-radius: 22px;
+  animation: subtle-float 6s ease-in-out infinite;
+}
+.hfloat--l {
+  left: -92px;
+  bottom: 120px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 300px;
+}
+.hfloat--r {
+  right: -84px;
+  top: 90px;
+  display: grid;
+  gap: 4px;
+  min-width: 196px;
+  animation-delay: -3s;
+}
+.hfloat__dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 5px rgba(23, 138, 116, 0.14);
+}
+.hfloat b {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.hfloat__sub,
+.hfloat__k {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--paper-dim);
+}
+.hfloat__v {
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.hfloat__bar {
+  display: block;
+  height: 6px;
+  margin-top: 6px;
+  border-radius: 3px;
+  background: var(--wall-deep);
+  overflow: hidden;
+}
+.hfloat__bar span {
+  display: block;
+  width: 97.4%;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--scan), #8b99ff);
+}
+@media (max-width: 1180px) {
+  .hfloat {
+    display: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hfloat {
+    animation: none;
+  }
+}
+
+/* the 16:10 stage + min-height forced a 416px min width on phones */
+.hero__film .vstage {
+  min-height: 0;
+}
+@media (max-width: 767px) {
+  .hero__film .vstage {
+    aspect-ratio: 4 / 3;
+  }
+}
+.hero__inner > * {
+  max-width: 100%;
+  min-width: 0;
 }

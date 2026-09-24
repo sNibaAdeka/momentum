@@ -3,6 +3,8 @@ import { Counter, PencilUnderline, ScanReveal, Reveal, TiltCard, useDrawn } from
 import { NEURONS_PER_SECOND, useElapsed } from '../lib/clock'
 import { fmtDec, fmtInt } from '../lib/format'
 import { sliceUrl } from '../ct/cache'
+import { MagicCard } from '@/components/ui/magic-card'
+import { Particles } from '@/components/ui/particles'
 
 /* Counts neurons lost since this block scrolled into view — the statistic, made physical. */
 function LiveLoss({ active }: { active: boolean }) {
@@ -46,13 +48,14 @@ export function Urgency() {
   const [ref, seen] = useDrawn<HTMLDivElement>()
   const bg = useSlice(18, seen)
   return (
-    <section id="urgency" className="section urg" aria-labelledby="urg-title">
+    <section id="urgency" className="section urg theme-dark" aria-labelledby="urg-title">
+      <div className="beam" aria-hidden="true" />
+      <Particles className="section-particles" quantity={80} color="#c9d2ff" />
       <div className="wrap">
         <div className="section-head section-head--split">
           <ScanReveal>
-            <h2 id="urg-title" className="h2">
-              Пока снимок ждёт описания, мозг теряет клетки
-            </h2>
+            <p className="label"><b>01</b> Срочность</p>
+            <h2 id="urg-title" className="h2"><span>Пока снимок ждёт описания,</span><span className="accent-i">мозг теряет клетки.</span></h2>
           </ScanReveal>
           <Reveal delay={0.1}>
             <p className="lead">
@@ -64,7 +67,9 @@ export function Urgency() {
 
         <div ref={ref}>
                       <div className="urg__films">
-              <TiltCard as="article" className="card urg__film urg__film--main" tilt={3}>
+              <TiltCard as="article" className="urg__film urg__film--main" tilt={3}>
+                <MagicCard>
+                <div className="urg__inner">
                 {bg && <img className="urg__bg" src={bg} alt="" aria-hidden="true" />}
                 <p className="urg__figure serif">
                   <Counter to={1.9} duration={1.8} format={(n) => `${fmtDec(n, 1)} млн`} />
@@ -73,9 +78,13 @@ export function Urgency() {
                 <p className="urg__caption">нейронов гибнут каждую минуту без лечения</p>
                 <LiveLoss active={seen} />
                 <p className="film__source print">Saver J.L., Stroke, 2006</p>
+              </div>
+                </MagicCard>
               </TiltCard>
 
-              <TiltCard as="article" className="card urg__film">
+              <TiltCard as="article" className="urg__film">
+                <MagicCard>
+                <div className="urg__inner">
                 <div className="urg__row">
                   <p className="urg__figure urg__figure--sm serif">
                     2 <span className="urg__of">из</span> 3
@@ -84,14 +93,20 @@ export function Urgency() {
                 </div>
                 <p className="urg__caption">пациентов получают лечение позже рекомендованных 60 минут</p>
                 <p className="film__source print">AHA/ASA Guidelines, Acute Ischemic Stroke</p>
+              </div>
+                </MagicCard>
               </TiltCard>
 
-              <TiltCard as="article" className="card urg__film">
+              <TiltCard as="article" className="urg__film">
+                <MagicCard>
+                <div className="urg__inner">
                 <p className="urg__figure urg__figure--sm serif">
                   <Counter to={890} duration={1.6} format={(n) => `$${fmtInt(n)} млрд`} />
                 </p>
                 <p className="urg__caption">ежегодная мировая экономическая нагрузка инсульта</p>
                 <p className="film__source print">World Stroke Organization, 2025</p>
+              </div>
+                </MagicCard>
               </TiltCard>
             </div>
         </div>

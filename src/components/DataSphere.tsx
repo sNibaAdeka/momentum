@@ -28,7 +28,7 @@ export function DataSphere({ size = 260, count = 520, lit = 0.07, className = ''
     })
     const css = getComputedStyle(document.documentElement)
     const bone = css.getPropertyValue('--paper').trim() || '#ece9e2'
-    const tissue = css.getPropertyValue('--pencil').trim() || '#e8472f'
+    const tissue = css.getPropertyValue('--scan').trim() || '#2d44ff'
     const R = size * 0.42
     const cx = size / 2
     const cy = size / 2

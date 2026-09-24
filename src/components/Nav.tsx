@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { Logo, MagneticButton } from './primitives'
+import { LiquidMetalButton } from './ui/liquid-metal-button'
 import { NEURONS_PER_MINUTE, NEURONS_PER_SECOND, ANALYSIS_SECONDS, useElapsed } from '../lib/clock'
 import { fmtCompact, fmtDuration, fmtInt, plural } from '../lib/format'
 import { easeIn, easeOut } from '../lib/env'
@@ -137,9 +138,9 @@ export function Nav() {
         </nav>
         <div className="nav__right">
           <NeuronClock />
-          <MagneticButton href="#contact" size="sm" className="nav__cta">
-            Запросить демо
-          </MagneticButton>
+          <span className="nav__cta">
+            <LiquidMetalButton href="#contact" label="Запросить демо" size="sm" />
+          </span>
           <button
             ref={menuBtn}
             type="button"

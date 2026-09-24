@@ -1,6 +1,12 @@
 import { Check } from 'lucide-react'
 import { MagneticButton, ScanReveal, Reveal } from '../components/primitives'
 import { LiquidMetalButton } from '../components/ui/liquid-metal-button'
+import { MagicCard } from '@/components/ui/magic-card'
+import type { ReactNode } from 'react'
+
+function PlanShell({ featured, children }: { featured: boolean; children: ReactNode }) {
+  return featured ? <>{children}</> : <MagicCard gradientColor="rgba(45,68,255,0.06)">{children}</MagicCard>
+}
 import { choosePlan, type Plan } from '../lib/planStore'
 
 interface PlanCard {
@@ -36,16 +42,16 @@ export function Pricing() {
       <div className="wrap">
         <div className="section-head section-head--split">
           <ScanReveal>
-            <h2 id="pricing-title" className="h2">
-              Тарифы
-            </h2>
+            <p className="label"><b>07</b> Тарифы</p>
+            <h2 id="pricing-title" className="h2"><span>Простые</span><span className="accent-b">тарифы.</span></h2>
           </ScanReveal>
           <p className="lead">Фиксированная цена в месяц. Начните с Core и подключите интеграцию, когда будете готовы.</p>
         </div>
         <div className="plans">
           {PLANS.map((p, i) => (
             <Reveal key={p.id} delay={i * 0.08} className="plans__cell">
-              <article className={`plan${p.featured ? ' plan--featured' : ' card'}`} aria-labelledby={`plan-${p.id}`}>
+              <PlanShell featured={!!p.featured}>
+              <article className={`plan${p.featured ? ' plan--featured' : ''}`} aria-labelledby={`plan-${p.id}`}>
                 {p.featured && <span className="plan__glow" aria-hidden="true" />}
                 <header className="plan__head">
                   <h3 id={`plan-${p.id}`} className="plan__name">
@@ -76,6 +82,7 @@ export function Pricing() {
                   </MagneticButton>
                 )}
               </article>
+              </PlanShell>
             </Reveal>
           ))}
         </div>

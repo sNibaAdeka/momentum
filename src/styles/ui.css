@@ -168,3 +168,356 @@
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/* ================= Spark badge (Vetra) ================= */
+.spark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 16px 5px 5px;
+  border-radius: 999px;
+  overflow: hidden;
+  isolation: isolate;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--paper);
+}
+.spark__ring {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  border-radius: inherit;
+  overflow: hidden;
+  background: var(--rule-strong);
+}
+.spark__ring::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 140%;
+  aspect-ratio: 1;
+  background: conic-gradient(from 0deg, transparent 0 290deg, var(--scan) 340deg, #fff 360deg);
+  animation: spark-rot 3.2s linear infinite;
+}
+@keyframes spark-rot {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+.spark__fill {
+  position: absolute;
+  inset: 1.5px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--wall-raised);
+}
+.spark__chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6b78ff, var(--scan));
+  color: #fff;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+}
+
+/* ================= Hero device: scroll tilt + glow ================= */
+.hero__tiltwrap {
+  perspective: 1400px;
+}
+.hero__tilt {
+  transform-origin: 50% 0%;
+  will-change: transform;
+}
+.hero__devglow {
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  z-index: -1;
+  width: 72%;
+  height: 42%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: linear-gradient(90deg, #56a0ff, #2d44ff);
+  filter: blur(90px);
+  opacity: 0;
+  animation: image-glow 6s ease-out 0.6s forwards;
+  pointer-events: none;
+}
+
+/* ================= Headline line reveal ================= */
+.lines .label,
+.lines .h2 > span,
+.lines .display > span {
+  opacity: 0;
+  transform: translateY(0.45em);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.9s var(--ease-out);
+}
+.lines .label {
+  transform: translateY(10px);
+}
+.lines .h2 > span:nth-child(2),
+.lines .display > span:nth-child(2) {
+  transition-delay: 0.1s;
+}
+.lines.is-in .label,
+.lines.is-in .h2 > span,
+.lines.is-in .display > span {
+  opacity: 1;
+  transform: none;
+}
+
+/* ================= Globe ================= */
+.globe {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 1;
+  justify-self: center;
+}
+.globe__gl {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-out);
+}
+.globe.is-ready .globe__gl {
+  opacity: 1;
+}
+.globe-canvas {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.globe__labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.glabel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  padding-left: 12px;
+  margin-top: -10px;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--paper);
+  will-change: transform, opacity;
+}
+.glabel--home .hand {
+  font-size: 1.5rem;
+}
+.glabel--ring {
+  padding: 4px 10px;
+  margin: -12px 0 0 8px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-stretch: 87.5%;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  background: rgba(6, 7, 9, 0.72);
+  border: 1px solid var(--rule-strong);
+}
+.glabel--som b {
+  color: var(--pencil);
+}
+.glabel--sam b {
+  color: var(--scan);
+}
+.globe__fallback {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #2b3563, #07080b 70%);
+  box-shadow: 0 0 90px rgba(93, 116, 255, 0.35);
+}
+
+/* ================= Integrations orbit (Vetra) ================= */
+.orbit {
+  position: relative;
+  height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.orbit__core {
+  position: relative;
+  z-index: 2;
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--wall-raised);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow-lift);
+}
+.orbit__chip {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--wall-raised);
+  border: 1px solid var(--rule-strong);
+  box-shadow: var(--shadow-soft);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.orbit-path {
+  stroke: rgba(var(--ink-rgb), 0.14);
+  stroke-width: 1;
+}
+.ripple-ring {
+  background: rgba(var(--ink-rgb), 0.05);
+  border-color: rgba(var(--ink-rgb), 0.12);
+  transform: translate(-50%, -50%);
+  animation: ripple 2.6s ease calc(var(--i, 0) * 0.2s) infinite;
+}
+
+/* ================= Particles + MagicCard fit ================= */
+.section-particles {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.urg__film {
+  padding: 0;
+  overflow: visible;
+  display: block;
+}
+.urg__film .magic {
+  height: 100%;
+}
+.urg__inner {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  padding: clamp(22px, 2.6vw, 34px);
+  border-radius: 25px;
+}
+.urg__film--main .urg__inner {
+  gap: var(--space-5);
+  align-content: space-between;
+}
+@media (min-width: 900px) {
+  .urg__film--main .urg__inner {
+    min-height: 500px;
+  }
+}
+.urg__figure.serif {
+  font-style: normal;
+}
+.plans__cell .magic {
+  height: 100%;
+}
+.plans__cell .magic .plan {
+  height: 100%;
+}
+.nav__inner {
+  background: rgba(255, 255, 255, 0.92);
+}
+@media (prefers-reduced-motion: reduce) {
+  .spark__ring::before,
+  .ripple-ring,
+  .hero__devglow {
+    animation: none;
+  }
+  .hero__devglow {
+    opacity: 0.8;
+  }
+}
+
+/* ================= Marquee strip ================= */
+.marquee {
+  position: relative;
+  overflow: hidden;
+  margin-top: var(--space-8);
+  padding-block: 18px;
+  border-block: 1px solid var(--rule);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+.marquee__row {
+  display: flex;
+  flex: none;
+  gap: 48px;
+  padding-right: 48px;
+}
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+  color: var(--paper-dim);
+}
+.marquee__item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--scan);
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+  }
+}
+
+/* ================= Principles as cards ================= */
+.principles__list {
+  gap: var(--space-4);
+  border-top: 0;
+}
+.principles__list li {
+  border-bottom: 0;
+}
+.principle {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  gap: var(--space-3);
+}
+.principle__icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--scan-soft);
+  color: var(--scan);
+  margin-bottom: var(--space-2);
+}
+.principle__icon svg {
+  width: 22px;
+  height: 22px;
+}

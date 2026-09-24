@@ -10,6 +10,7 @@
   --wall: #f4f5f5; /* page */
   --wall-deep: #eceeee; /* sunken bands, footer */
   --wall-raised: #ffffff; /* cards */
+  --ink-rgb: 20, 24, 27;
   --rule: rgba(20, 24, 27, 0.08);
   --rule-strong: rgba(20, 24, 27, 0.16);
 
@@ -33,8 +34,8 @@
   /* marks */
   --pencil: #d8432c;
   --pencil-soft: rgba(216, 67, 44, 0.09);
-  --scan: #2f6feb;
-  --scan-soft: rgba(47, 111, 235, 0.12);
+  --scan: #2d44ff; /* electric blue — Momentum's marks, second-line accents */
+  --scan-soft: rgba(45, 68, 255, 0.1);
   --ok: #178a74;
 
   /* paper form */
@@ -47,7 +48,8 @@
   --shadow-lift: 0 2px 4px rgba(16, 24, 32, 0.05), 0 30px 70px -28px rgba(16, 24, 32, 0.28);
 
   --font-serif: 'Literata', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --font-sans: 'Geologica', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Manrope', ui-sans-serif, system-ui, sans-serif;
   --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
   --font-mono: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -87,24 +89,31 @@
   --nav-h: 64px;
 }
 
-/* Dark scope: film and the PACS screen keep the reading-room palette. */
+/* Dark scope: film, the PACS screen and the "lights off" sections. */
 .film,
-.viewer {
+.viewer,
+.theme-dark {
+  --ink-rgb: 236, 233, 226;
   --wall: #000;
-  --wall-raised: #0d0f10;
+  --wall-deep: #0a0b0d;
+  --wall-raised: #0f1113;
   --rule: rgba(236, 233, 226, 0.1);
   --rule-strong: rgba(236, 233, 226, 0.2);
   --paper: #ece9e2;
   --paper-dim: #a4a19b;
   --paper-faint: #78766f;
-  --pencil: #f0553d;
-  --scan: #5b91ff;
+  --pencil: #ff5a43;
+  --scan: #6f84ff;
+  --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+}
+.theme-dark {
+  --wall: #060709;
 }
 
 @media (min-width: 768px) {
   :root {
     --gutter: 32px;
-    --nav-h: 72px;
+    --nav-h: 84px;
   }
 }
 @media (min-width: 1280px) {
