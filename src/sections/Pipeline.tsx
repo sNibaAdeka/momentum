@@ -232,7 +232,7 @@ function PinnedCard({ step, i, progress, n, active }: { step: Step; i: number; p
   const opacity = useTransform(rel, (r) => 1 - Math.min(Math.abs(r), 1) * 0.55)
   return (
     <motion.article
-      className={`step step--pinned${active ? ' is-active' : ''}`}
+      className={`step step--pinned film${active ? ' is-active' : ''}`}
       style={{ rotateY, z, opacity, transformPerspective: 1400 }}
       aria-label={`Этап ${step.n}: ${step.title}`}
     >
@@ -246,7 +246,7 @@ function MobileStep({ step }: { step: Step }) {
   const inView = useInView(ref, { margin: '-30% 0px -30% 0px' })
   return (
     <Reveal>
-      <article ref={ref} className={`step${inView ? ' is-active' : ''}`}>
+      <article ref={ref} className={`step film${inView ? ' is-active' : ''}`}>
         <StepBody step={step} active={inView} />
       </article>
     </Reveal>
@@ -302,13 +302,17 @@ export function Pipeline() {
                 Как работает Momentum
               </h2>
             </ScanReveal>
-            <p className="lead">Четыре шага от снимка до врача — 18 секунд на исследование.</p>
+            <p className="lead">
+              Четыре шага от снимка до врача — 18 секунд на исследование. Прокручивайте: плёнки едут по негатоскопу, как в
+              мотор-альтернаторе рентгенкабинета.
+            </p>
           </div>
         </div>
 
         {pinned ? (
           <>
             <div className="how__viewport">
+              <span className="how__tube" aria-hidden="true" />
               <motion.div ref={track} className="how__track" style={{ x }}>
                 {STEPS.map((s, i) => (
                   <PinnedCard key={s.n} step={s} i={i} progress={scrollYProgress} n={n} active={active === i} />

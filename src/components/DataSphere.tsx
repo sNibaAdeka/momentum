@@ -27,8 +27,8 @@ export function DataSphere({ size = 260, count = 520, lit = 0.07, className = ''
       return { x: Math.cos(th) * r, y, z: Math.sin(th) * r, lit: rng() < lit, ph: rng() * Math.PI * 2 }
     })
     const css = getComputedStyle(document.documentElement)
-    const bone = css.getPropertyValue('--bone').trim() || '#e7edf2'
-    const tissue = css.getPropertyValue('--tissue').trim() || '#3fe0cf'
+    const bone = css.getPropertyValue('--paper').trim() || '#ece9e2'
+    const tissue = css.getPropertyValue('--pencil').trim() || '#e8472f'
     const R = size * 0.42
     const cx = size / 2
     const cy = size / 2

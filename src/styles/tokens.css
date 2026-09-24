@@ -1,45 +1,64 @@
+/*
+ * "Ординаторская" — the radiology reading room.
+ * A dim graphite wall, backlit viewboxes, black film, a red grease pencil.
+ * Colour is used the way it is used in that room: light to read by, red to mark a finding,
+ * blue only for what the software draws.
+ */
 :root {
   color-scheme: dark;
 
-  /* reading-room graphite: dark with the blue cast of diagnostic monitors */
-  --void: #05080b;
-  --graphite-900: #090e12;
-  --graphite-800: #0e151b;
-  --graphite-700: #141e26;
-  --graphite-600: #1b2833;
+  /* the wall */
+  --wall: #111213;
+  --wall-deep: #0b0c0d;
+  --wall-raised: #17191a;
+  --rule: rgba(236, 233, 226, 0.1);
+  --rule-strong: rgba(236, 233, 226, 0.2);
 
-  --line: rgba(164, 196, 222, 0.11);
-  --line-strong: rgba(164, 196, 222, 0.22);
+  /* type on the wall — warm paper white, not screen white */
+  --paper: #ece9e2;
+  --paper-dim: #a4a19b;
+  --paper-faint: #78766f;
 
-  --bone: #e7edf2;
-  --bone-dim: #9aabb9;
-  --bone-faint: #6f8292;
+  /* viewbox (negatoscope) */
+  --light: #e3ebef;
+  --light-deep: #c9d4da;
+  --bezel: #232627;
+  --bezel-hi: #3a3e40;
+  --ink: #0f1417; /* text printed on a lit surface */
+  --ink-dim: #46535a;
 
-  --scan: #3d8bff; /* electric blue — the scanner, the machine, the interface */
-  --scan-ink: #031022;
-  --scan-soft: rgba(61, 139, 255, 0.14);
-  --tissue: #3fe0cf; /* cold turquoise — healthy tissue, the network */
-  --tissue-soft: rgba(63, 224, 207, 0.12);
-  --alert: #ff5b4a; /* signal coral — lesion, delay, loss. Never decorative. */
-  --alert-soft: rgba(255, 91, 74, 0.14);
+  /* film */
+  --film: #000;
+  --film-print: rgba(236, 240, 242, 0.62);
 
-  --glass: rgba(12, 19, 25, 0.56);
-  --glass-strong: rgba(12, 19, 25, 0.82);
-  --glass-edge: rgba(190, 220, 245, 0.14);
+  /* marks */
+  --pencil: #e8472f; /* grease pencil — findings, delay, loss */
+  --pencil-soft: rgba(232, 71, 47, 0.14);
+  --scan: #4a86ff; /* Momentum's own digital marks + focus */
+  --scan-soft: rgba(74, 134, 255, 0.16);
+  --ok: #5cc8b4; /* used sparingly: “on time”, “online” */
 
+  /* request form paper */
+  --form-paper: #eeede7;
+  --form-ink: #161819;
+  --form-ink-dim: #5a5d5e;
+  --form-rule: #b9b8b1;
+
+  --font-serif: 'Literata', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-sans: 'Geologica', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
   --font-mono: 'Martian Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  --fs-micro: 0.6875rem; /* 11 */
-  --fs-xs: 0.75rem; /* 12 */
-  --fs-sm: 0.875rem; /* 14 */
-  --fs-base: 1.0625rem; /* 17 */
-  --fs-md: 1.1875rem; /* 19 */
-  --fs-lg: 1.375rem; /* 22 */
-  --fs-xl: 1.75rem; /* 28 */
-  --fs-h2: clamp(2.125rem, 1.25rem + 3.3vw, 4.25rem);
-  --fs-display: clamp(2.875rem, 1.2rem + 6.6vw, 7.25rem);
-  --fs-figure: clamp(4rem, 2rem + 9vw, 10.5rem);
+  --fs-micro: 0.6875rem;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1.0625rem;
+  --fs-md: 1.1875rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.75rem;
+  --fs-h2: clamp(2.25rem, 1.3rem + 3.2vw, 4.25rem);
+  --fs-display: clamp(2.875rem, 1.3rem + 4.4vw, 5.625rem);
+  --fs-figure: clamp(4rem, 2rem + 8vw, 9.5rem);
 
   --space-1: 4px;
   --space-2: 8px;
@@ -50,12 +69,11 @@
   --space-7: 48px;
   --space-8: 64px;
   --space-9: 96px;
-  --space-10: 144px;
 
-  --r-xs: 6px;
-  --r-sm: 10px;
-  --r-md: 16px;
-  --r-lg: 24px;
+  /* physical radii: film corners, metal bezels — nothing is a pill */
+  --r-film: 3px;
+  --r-bezel: 7px;
+  --r-ctl: 4px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in: cubic-bezier(0.55, 0, 0.78, 0.35);
@@ -74,6 +92,6 @@
 }
 @media (min-width: 1280px) {
   :root {
-    --gutter: 48px;
+    --gutter: 56px;
   }
 }

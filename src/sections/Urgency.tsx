@@ -1,27 +1,32 @@
-import { Counter, ScanReveal, SpotlightPanel, Reveal } from '../components/primitives'
+import { useEffect, useState } from 'react'
+import { Counter, Lightbox, PencilUnderline, ScanReveal, Reveal, TiltCard, useDrawn } from '../components/primitives'
 import { NEURONS_PER_SECOND, useElapsed } from '../lib/clock'
 import { fmtDec, fmtInt } from '../lib/format'
-import { useInView } from 'framer-motion'
-import { useRef, useState, useEffect } from 'react'
+import { sliceUrl } from '../ct/cache'
 
 /* Counts neurons lost since this block scrolled into view — the statistic, made physical. */
-function LiveLoss() {
-  const ref = useRef<HTMLParagraphElement>(null)
-  const inView = useInView(ref, { once: true })
+function LiveLoss({ active }: { active: boolean }) {
   const t = useElapsed()
   const [since, setSince] = useState<number | null>(null)
   useEffect(() => {
-    if (inView && since === null) setSince(t)
-  }, [inView, since, t])
+    if (active && since === null) setSince(t)
+  }, [active, since, t])
   const lost = since === null ? 0 : (t - since) * NEURONS_PER_SECOND
   return (
-    <p ref={ref} className="urg__live">
-      <span className="urg__live-dot" aria-hidden="true" />
-      <span>
-        С момента, как вы начали читать этот блок: <b className="num">−{fmtInt(lost)}</b>
-      </span>
+    <p className="urg__live">
+      <span className="hand">пока вы читаете:</span> <b className="num">−{fmtInt(lost)}</b>
     </p>
   )
+}
+
+function useSlice(index: number, active: boolean) {
+  const [url, setUrl] = useState<string | null>(null)
+  useEffect(() => {
+    if (!active || url) return
+    const id = window.setTimeout(() => setUrl(sliceUrl(index)), 30)
+    return () => window.clearTimeout(id)
+  }, [active, index, url])
+  return url
 }
 
 function Patients() {
@@ -38,6 +43,8 @@ function Patients() {
 }
 
 export function Urgency() {
+  const [ref, seen] = useDrawn<HTMLDivElement>()
+  const bg = useSlice(18, seen)
   return (
     <section id="urgency" className="section urg" aria-labelledby="urg-title">
       <div className="wrap">
@@ -55,34 +62,40 @@ export function Urgency() {
           </Reveal>
         </div>
 
-        <div className="urg__grid">
-          <SpotlightPanel as="article" className="urg__card urg__card--main" tilt={3}>
-            <p className="urg__figure coral">
-              <Counter to={1.9} duration={1.8} format={(n) => `${fmtDec(n, 1)} млн`} />
-            </p>
-            <p className="urg__caption">нейронов гибнут каждую минуту без лечения</p>
-            <LiveLoss />
-            <p className="source">Saver J.L., «Time is brain — quantified», Stroke, 2006</p>
-          </SpotlightPanel>
+        <div ref={ref}>
+          <Lightbox className="urg__box">
+            <div className="urg__films">
+              <TiltCard as="article" className="film urg__film urg__film--main" tilt={3}>
+                {bg && <img className="urg__bg" src={bg} alt="" aria-hidden="true" />}
+                <p className="urg__figure serif">
+                  <Counter to={1.9} duration={1.8} format={(n) => `${fmtDec(n, 1)} млн`} />
+                  <PencilUnderline drawn={seen} className="urg__under" />
+                </p>
+                <p className="urg__caption">нейронов гибнут каждую минуту без лечения</p>
+                <LiveLoss active={seen} />
+                <p className="film__source print">Saver J.L., Stroke, 2006</p>
+              </TiltCard>
 
-          <SpotlightPanel as="article" className="urg__card">
-            <div className="urg__row">
-              <p className="urg__figure urg__figure--sm">
-                2 <span className="urg__of">из</span> 3
-              </p>
-              <Patients />
+              <TiltCard as="article" className="film urg__film">
+                <div className="urg__row">
+                  <p className="urg__figure urg__figure--sm serif">
+                    2 <span className="urg__of">из</span> 3
+                  </p>
+                  <Patients />
+                </div>
+                <p className="urg__caption">пациентов получают лечение позже рекомендованных 60 минут</p>
+                <p className="film__source print">AHA/ASA Guidelines, Acute Ischemic Stroke</p>
+              </TiltCard>
+
+              <TiltCard as="article" className="film urg__film">
+                <p className="urg__figure urg__figure--sm serif">
+                  <Counter to={890} duration={1.6} format={(n) => `$${fmtInt(n)} млрд`} />
+                </p>
+                <p className="urg__caption">ежегодная мировая экономическая нагрузка инсульта</p>
+                <p className="film__source print">World Stroke Organization, 2025</p>
+              </TiltCard>
             </div>
-            <p className="urg__caption">пациентов получают лечение позже рекомендованных 60 минут</p>
-            <p className="source">AHA/ASA Guidelines for the Early Management of Acute Ischemic Stroke</p>
-          </SpotlightPanel>
-
-          <SpotlightPanel as="article" className="urg__card">
-            <p className="urg__figure urg__figure--sm">
-              <Counter to={890} duration={1.6} format={(n) => `$${fmtInt(n)} млрд`} />
-            </p>
-            <p className="urg__caption">ежегодная мировая экономическая нагрузка инсульта</p>
-            <p className="source">World Stroke Organization, Global Stroke Fact Sheet 2025</p>
-          </SpotlightPanel>
+          </Lightbox>
         </div>
       </div>
     </section>

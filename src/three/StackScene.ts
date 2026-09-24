@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { CT_SIZE, CT_SLICES, CT_THICKNESS_MM, CT_FOV_MM, type CtSlice } from '../ct/ctSynth'
+import { CT_SIZE, CT_THICKNESS_MM, CT_FOV_MM, type CtSlice } from '../ct/ctSynth'
 import { getSlice } from '../ct/cache'
 import type { BrainSceneHandle, BrainSceneOptions } from './types'
 
@@ -39,7 +39,7 @@ void main() {
 `
 
 /** RGBA texture: brain window for grey, opacity from density. */
-function ctTexture(slice: CtSlice) {
+function ctTexture(slice: CtSlice, solid = false) {
   const n = CT_SIZE * CT_SIZE
   const data = new Uint8Array(n * 4)
   const { hu } = slice
@@ -51,15 +51,14 @@ function ctTexture(slice: CtSlice) {
       g = 0
       a = 0
     } else if (v > 300) {
-      g = 235 + Math.min(20, (v - 300) / 60)
-      a = 0.8
+      g = 228
+      a = solid ? 1 : 0.4
     } else {
       g = Math.max(0, Math.min(255, ((v - 0) / 80) * 255))
-      a = v < 12 ? 0.05 : 0.07 + (g / 255) * 0.14
+      a = solid ? 0.97 : v < 12 ? 0.02 : 0.05 + (g / 255) * 0.12
     }
     // headrest is scanner hardware, not anatomy
-    const j = Math.floor(k / CT_SIZE)
-    if (j > CT_SIZE * 0.9 && v > 100 && v < 300) a = 0
+    if (v > 100 && v < 300) a = 0 // only the headrest lives in this HU band
     const o = k * 4
     data[o] = g
     data[o + 1] = g
@@ -128,8 +127,8 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
 
   const css = getComputedStyle(document.documentElement)
   const scanColor = new THREE.Color(css.getPropertyValue('--scan').trim() || '#3d8bff')
-  const alertColor = new THREE.Color(css.getPropertyValue('--alert').trim() || '#ff5b4a')
-  const boneColor = new THREE.Color(css.getPropertyValue('--bone').trim() || '#e7edf2')
+  const alertColor = new THREE.Color(css.getPropertyValue('--pencil').trim() || '#e8472f')
+  const boneColor = new THREE.Color(css.getPropertyValue('--paper').trim() || '#ece9e2')
 
   const disposables: { dispose(): void }[] = []
   const track = <T extends { dispose(): void }>(o: T): T => {
@@ -140,9 +139,22 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
   planeGeo.rotateX(-Math.PI / 2) // lie flat; image top (anterior) → −z
 
   const slices: SliceMesh[] = []
-  const totalH = (CT_SLICES - 1) * GAP
+  // cut plane = the slice with the largest infarct cross-section: a crisp CT image on top, the head below it
+  let TOP = 0
+  {
+    let best = -1
+    for (let i = 8; i < 22; i++) {
+      const c = getSlice(i).maskCount
+      if (c > best) {
+        best = c
+        TOP = i
+      }
+    }
+  }
+  const COUNT = TOP + 1
+  const totalH = TOP * GAP
   let spread = 1 // explode factor driven by scroll
-  const yOf = (i: number) => (i - (CT_SLICES - 1) / 2) * GAP * spread
+  const yOf = (i: number) => (i - TOP / 2) * GAP * spread
 
   /* volume box: the frame every 3D workstation draws around a dataset */
   const box = new THREE.LineSegments(
@@ -221,22 +233,22 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
     const vFov = (camera.fov * Math.PI) / 180
     const hFov = 2 * Math.atan(Math.tan(vFov / 2) * camera.aspect)
     const dist = Math.max(r / Math.sin(vFov / 2), r / Math.sin(hFov / 2))
-    camera.position.set(0, dist * 0.52, dist * 0.86)
-    camera.lookAt(0, -0.08, 0)
+    camera.position.set(0, dist * 0.8, dist * 0.6)
+    camera.lookAt(0, -0.05, 0)
     camera.updateProjectionMatrix()
     invalidate()
   }
 
   function acquireNext() {
     const i = st.acquired
-    if (i >= CT_SLICES) return
+    if (i >= COUNT) return
     const s = getSlice(i)
     const mat = track(
       new THREE.ShaderMaterial({
         vertexShader: sliceVertex,
         fragmentShader: sliceFragment,
         uniforms: {
-          map: { value: track(ctTexture(s)) },
+          map: { value: track(ctTexture(s, i === TOP)) },
           uOpacity: { value: animate ? 0 : 1 },
           uScan: { value: 0 },
           uScanColor: { value: scanColor },
@@ -302,8 +314,7 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
 
   function updateLabel() {
     if (!lesionLabel || !lesionWeight) return
-    const cy = lesionLocal.y / lesionWeight
-    tmp.set(lesionLocal.x / lesionWeight, (cy - (CT_SLICES - 1) / 2) * GAP * spread, lesionLocal.z / lesionWeight)
+    tmp.set(lesionLocal.x / lesionWeight, (TOP / 2) * GAP * spread, lesionLocal.z / lesionWeight)
     stack.localToWorld(tmp)
     tmp.project(camera)
     const x = (tmp.x * 0.5 + 0.5) * w
@@ -311,7 +322,7 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
     lesionLabel.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`
     lesionLabel.style.opacity = st.detected ? String(clamp01(1 - st.scroll * 1.8)) : '0'
     lesionLabel.classList.toggle('is-drawn', st.detected)
-    lesionLabel.classList.toggle('is-flip', x > w - 260)
+    lesionLabel.classList.toggle('is-flip', x > w * 0.58)
   }
 
   function frame() {
@@ -321,11 +332,11 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
     st.t += dt
 
     // acquisition: one slice every ~55 ms, bottom → top (vertex last), like a helical scan
-    if (st.acquired < CT_SLICES) {
-      const due = animate ? Math.min(CT_SLICES, Math.floor(st.t / 0.055) + 1) : CT_SLICES
+    if (st.acquired < COUNT) {
+      const due = animate ? Math.min(COUNT, Math.floor(st.t / 0.07) + 1) : COUNT
       while (st.acquired < due) acquireNext()
     }
-    const acquiring = st.acquired < CT_SLICES
+    const acquiring = st.acquired < COUNT
 
     const k = 1 - Math.pow(0.02, dt)
     st.px += (st.tpx - st.px) * k
@@ -339,7 +350,7 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
     spread = 1 + st.scroll * 1.6
     layout()
     const drift = animate ? Math.sin(st.t * 0.12) * 0.22 : 0
-    root.rotation.y = 0.62 + drift + st.px * 0.3 + st.dragYaw + st.scroll * 0.5
+    root.rotation.y = 0.18 + drift + st.px * 0.3 + st.dragYaw + st.scroll * 0.5
     root.rotation.x = st.py * 0.08 - st.scroll * 0.12
     root.position.y = st.scroll * 0.4
     root.updateMatrixWorld()
@@ -348,10 +359,10 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
     let scanIdx: number
     if (acquiring) scanIdx = st.acquired - 1
     else if (animate) {
-      const tt = st.t - CT_SLICES * 0.055
-      scanIdx = ((Math.sin(tt * 0.5 - Math.PI / 2) + 1) / 2) * (CT_SLICES - 1)
+      const tt = st.t - COUNT * 0.07
+      scanIdx = ((Math.sin(tt * 0.5 - Math.PI / 2) + 1) / 2) * TOP
     } else scanIdx = (lesionFrom + lesionTo) / 2
-    scanGroup.position.y = (scanIdx - (CT_SLICES - 1) / 2) * GAP * spread
+    scanGroup.position.y = (scanIdx - TOP / 2) * GAP * spread + 0.004
     ;(scanEdge.material as THREE.LineBasicMaterial).opacity = 0.9 * clamp01(1 - st.scroll * 1.5)
     ;(scanFill.material as THREE.MeshBasicMaterial).opacity = 0.06 * clamp01(1 - st.scroll * 1.5)
 
@@ -365,12 +376,13 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
       const s = slices[i]
       const mat = s.base.material
       const age = st.t - s.born
-      mat.uniforms.uOpacity.value = animate ? clamp01(age / 0.35) : 1
+      const depthFade = i === TOP ? 1 : 0.35 + 0.65 * (i / TOP)
+      mat.uniforms.uOpacity.value = (animate ? clamp01(age / 0.35) : 1) * depthFade
       const near = Math.max(0, 1 - Math.abs(i - scanIdx) / 1.2)
       mat.uniforms.uScan.value = near
       if (s.mask) {
         if (st.detected) s.maskShown = animate ? clamp01((st.t - st.detectAt) / 0.6) : 1
-        s.mask.material.uniforms.uOpacity.value = s.maskShown
+        s.mask.material.uniforms.uOpacity.value = s.maskShown * (i === TOP ? 1 : 0.35)
         s.mask.material.uniforms.uScan.value = near * 0.6
       }
     }

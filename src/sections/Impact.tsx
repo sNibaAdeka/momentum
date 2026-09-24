@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import { useInView, useReducedMotion } from 'framer-motion'
-import { Counter, ScanReveal, SpotlightPanel } from '../components/primitives'
+import { Counter, ScanReveal } from '../components/primitives'
 import { DataSphere } from '../components/DataSphere'
 import { fmtDec, fmtInt, plural } from '../lib/format'
 
@@ -159,7 +159,7 @@ export function Impact() {
         </div>
 
         <div className="impact__grid">
-          <SpotlightPanel className="icard icard--speed" tilt={0}>
+          <div className="icard icard--speed">
             <div className="icard__text">
               <p className="icard__figure">
                 <Counter to={5} duration={1.2} format={(n) => `${Math.max(1, Math.round(n))}×`} />
@@ -167,35 +167,35 @@ export function Impact() {
               <p className="icard__cap">быстрее первичной ручной оценки</p>
             </div>
             <Prisms />
-          </SpotlightPanel>
+          </div>
 
-          <SpotlightPanel className="icard icard--money" tilt={0}>
+          <div className="icard icard--money">
             <p className="icard__figure">
               <Counter to={100000} duration={1.8} format={(n) => `$${fmtInt(Math.round(n / 1000) * 1000)}`} />
             </p>
             <p className="icard__cap">потенциальная экономия клиники в год</p>
             <p className="source">Оценка Momentum; зависит от потока исследований и штата.</p>
-          </SpotlightPanel>
+          </div>
 
-          <SpotlightPanel className="icard icard--clock" tilt={0}>
+          <div className="icard icard--clock">
             <div className="icard__text">
               <p className="icard__figure">24/7</p>
               <p className="icard__cap">круглосуточный анализ — ночью и в выходные так же, как днём</p>
             </div>
             <Clock24 />
-          </SpotlightPanel>
+          </div>
 
-          <SpotlightPanel className="icard icard--flow" tilt={0}>
+          <div className="icard icard--flow">
             <div className="icard__text">
               <p className="icard__figure icard__figure--word">PACS · HIS</p>
               <p className="icard__cap">интеграция в существующий маршрут: без нового окна и лишних кликов</p>
             </div>
             <Flow />
-          </SpotlightPanel>
+          </div>
 
-          <SpotlightPanel className="icard icard--roi" tilt={0}>
+          <div className="icard icard--roi">
             <Roi />
-          </SpotlightPanel>
+          </div>
         </div>
       </div>
     </section>

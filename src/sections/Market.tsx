@@ -80,6 +80,7 @@ export function Market() {
               <span className="ring__tag">SAM</span>
             </motion.div>
             <motion.div className="ring ring--som" style={{ z: somZ }}>
+              <span className="ring__note hand">старт — Казахстан</span>
               <span className="ring__spin" />
               <span className="ring__tag">SOM</span>
             </motion.div>

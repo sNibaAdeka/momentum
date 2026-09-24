@@ -96,7 +96,7 @@ export function FinalCta() {
           </ol>
         </div>
 
-        <div className="cta__form glass">
+        <div className="cta__form referral">
           <AnimatePresence mode="wait" initial={false}>
             {sent ? (
               <motion.div
@@ -122,6 +122,10 @@ export function FinalCta() {
                 initial={false}
                 exit={{ opacity: 0, transition: { duration: 0.18 } }}
               >
+                <header className="referral__head">
+                  <p className="referral__title serif">Направление на демо</p>
+                  <p className="referral__no print">Форма № М-1</p>
+                </header>
                 {plan && (
                   <p className="cta__plan">
                     Интересует тариф <b>{PLAN_LABEL[plan]}</b>
@@ -202,7 +206,7 @@ export function FinalCta() {
                     Заявка не отправилась: нет связи с сервером. Проверьте интернет и нажмите ещё раз.
                   </p>
                 )}
-                <MagneticButton type="submit" disabled={isSubmitting} className="cta__submit">
+                <MagneticButton type="submit" variant="ink" disabled={isSubmitting} className="cta__submit">
                   {isSubmitting ? 'Отправляем…' : 'Запросить демо'}
                 </MagneticButton>
                 <p className="cta__fine">Нажимая кнопку, вы соглашаетесь на обработку контактных данных для связи по демо.</p>

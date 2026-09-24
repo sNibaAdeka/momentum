@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
-import { MagneticButton, Counter } from '../components/primitives'
+import { MagneticButton, Counter, Lightbox, Wedge, Clips } from '../components/primitives'
 import { FallbackScan } from '../components/FallbackScan'
 import { easeOut, hasWebGL, isCoarsePointer, isLowPower, isNarrow } from '../lib/env'
 import { fmtDec } from '../lib/format'
@@ -8,12 +8,10 @@ import type { BrainSceneHandle, SceneLabel } from '../three/types'
 
 type StageMode = 'loading' | 'webgl' | 'fallback'
 
-function BrainStage() {
+/** The CT volume on the film. The scene positions the grease-pencil annotation over the infarct. */
+function VolumeStage() {
   const host = useRef<HTMLDivElement>(null)
   const lesionEl = useRef<HTMLDivElement>(null)
-  const fidA = useRef<HTMLDivElement>(null)
-  const fidB = useRef<HTMLDivElement>(null)
-  const fidC = useRef<HTMLDivElement>(null)
   const [mode, setMode] = useState<StageMode>('loading')
   const reduce = useReducedMotion()
 
@@ -27,19 +25,14 @@ function BrainStage() {
     let handle: BrainSceneHandle | null = null
     let cancelled = false
     const quality = isCoarsePointer() || isNarrow() || isLowPower() ? 'low' : 'high'
-
     const start = () => {
       import('../three/StackScene')
         .then(({ createStackScene }) => {
           if (cancelled || !host.current) return
-          const labels: SceneLabel[] = []
-          if (lesionEl.current) labels.push({ id: 'lesion', el: lesionEl.current })
-          if (fidA.current) labels.push({ id: 'fid-a', el: fidA.current })
-          if (fidB.current) labels.push({ id: 'fid-b', el: fidB.current })
-          if (fidC.current) labels.push({ id: 'fid-c', el: fidC.current })
+          const labels: SceneLabel[] = lesionEl.current ? [{ id: 'lesion', el: lesionEl.current }] : []
           handle = createStackScene(host.current, {
             quality,
-            reducedMotion: !!window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+            reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
             labels,
             onReady: () => !cancelled && setMode('webgl'),
             onFail: () => !cancelled && setMode('fallback'),
@@ -47,9 +40,8 @@ function BrainStage() {
         })
         .catch(() => !cancelled && setMode('fallback'))
     }
-    // lazy: let the headline paint first
     const hasIdle = typeof window.requestIdleCallback === 'function'
-    const idleId = hasIdle ? window.requestIdleCallback(start, { timeout: 700 }) : window.setTimeout(start, 150)
+    const idleId = hasIdle ? window.requestIdleCallback(start, { timeout: 600 }) : window.setTimeout(start, 120)
 
     const hero = el.closest('.hero') as HTMLElement | null
     let ticking = false
@@ -58,12 +50,10 @@ function BrainStage() {
       ticking = true
       requestAnimationFrame(() => {
         ticking = false
-        const hgt = hero?.offsetHeight || window.innerHeight
-        handle?.setScroll(window.scrollY / hgt)
+        handle?.setScroll(window.scrollY / (hero?.offsetHeight || window.innerHeight))
       })
     }
     window.addEventListener('scroll', onScroll, { passive: true })
-
     return () => {
       cancelled = true
       window.removeEventListener('scroll', onScroll)
@@ -74,115 +64,54 @@ function BrainStage() {
   }, [])
 
   return (
-    <div className={`bstage is-${mode}`}>
+    <div className={`vstage is-${mode}`}>
       {mode !== 'webgl' && <FallbackScan animated={!reduce} />}
-      <div ref={host} className="bstage__gl" />
-      <div className="bstage__labels" aria-hidden="true">
-        <div ref={lesionEl} className="blabel blabel--lesion">
-          <span className="blabel__ring" />
-          <span className="blabel__leader" />
-          <span className="blabel__box">
-            <span className="blabel__title">Очаг · ишемия</span>
-            <span className="readout">32,8 мл · MCA / M2</span>
+      <div ref={host} className="vstage__gl" />
+      <div className="vstage__labels" aria-hidden="true">
+        <div ref={lesionEl} className="gp">
+          <svg className="gp__loop" viewBox="0 0 220 140">
+            <path
+              className="pencil"
+              pathLength={1}
+              d="M40 88C22 62 44 26 102 20c58-6 104 18 98 56-5 34-58 50-108 46C44 118 14 96 26 66c8-20 40-34 84-36"
+            />
+          </svg>
+          <svg className="gp__tail" viewBox="0 0 120 70">
+            <path className="pencil" pathLength={1} d="M4 64C30 50 58 30 112 8" />
+          </svg>
+          <span className="gp__note hand">
+            ишемия
+            <br />
+            32,8 мл
           </span>
         </div>
-        {[fidA, fidB, fidC].map((r, i) => (
-          <div key={i} ref={r} className="blabel blabel--fid">
-            <span className="readout" data-coord />
-          </div>
-        ))}
       </div>
-      {mode === 'webgl' && (
-        <p className="bstage__hint readout" aria-hidden="true">
-          Потяните, чтобы повернуть
-        </p>
-      )}
+      {mode === 'webgl' && <p className="vstage__hint print">Потяните — объём вращается</p>}
     </div>
   )
 }
 
-function HeroHud() {
-  const reduce = useReducedMotion()
-  const rows: { label: string; value: ReactNode; tone?: 'alert' }[] = [
-    { label: 'AI confidence', value: <Counter to={97.4} duration={1.8} format={(n) => `${fmtDec(n, 1)} %`} /> },
-    { label: 'Объём очага', value: <Counter to={32.8} duration={1.6} format={(n) => `${fmtDec(n, 1)} мл`} /> },
-    { label: 'Время анализа', value: <Counter to={18} duration={1.4} format={(n) => `${Math.round(n)} с`} /> },
-    { label: 'Статус', value: 'High priority', tone: 'alert' },
-    { label: 'Локализация', value: 'MCA / M2' },
-  ]
-  return (
-    <motion.aside
-      className="hud glass"
-      aria-label="Пример результата анализа"
-      initial={reduce ? false : { opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: easeOut, delay: 0.7 }}
-    >
-      <div className="hud__head">
-        <span className="hud__live" aria-hidden="true" />
-        <span className="readout">КТ без контраста · серия 4 · 28 срезов</span>
-      </div>
-      <dl className="hud__rows">
-        {rows.map((r, i) => (
-          <motion.div
-            key={r.label}
-            className="hud__row"
-            initial={reduce ? false : { opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, ease: easeOut, delay: 0.85 + i * 0.06 }}
-          >
-            <dt>{r.label}</dt>
-            <dd className={r.tone === 'alert' ? 'hud__value hud__value--alert' : 'hud__value'}>{r.value}</dd>
-          </motion.div>
-        ))}
-      </dl>
-      <div className="hud__bar" aria-hidden="true">
-        <span style={{ transform: 'scaleX(0.974)' }} />
-      </div>
-      <p className="hud__foot">
-        <span className="hud__scanline" aria-hidden="true" />
-        Диагностика, пока пациент ещё в сканере
-      </p>
-    </motion.aside>
-  )
-}
+const METRICS = [
+  { label: 'AI confidence', node: <Counter to={97.4} duration={1.8} format={(n) => `${fmtDec(n, 1)} %`} /> },
+  { label: 'Объём очага', node: <Counter to={32.8} duration={1.6} format={(n) => `${fmtDec(n, 1)} мл`} /> },
+  { label: 'Время анализа', node: <Counter to={18} duration={1.4} format={(n) => `${Math.round(n)} с`} /> },
+  { label: 'Статус', node: <span className="coral">High priority</span> },
+  { label: 'Локализация', node: 'MCA / M2' },
+]
 
 export function Hero() {
   const reduce = useReducedMotion()
   const item = (i: number) => ({
-    initial: reduce ? false : { opacity: 0, y: 28 },
+    initial: reduce ? false : { opacity: 0, y: 22 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.5, ease: easeOut, delay: 0.1 + i * 0.08 },
+    transition: { duration: 0.55, ease: easeOut, delay: 0.1 + i * 0.08 },
   })
   return (
     <section id="top" className="hero" aria-labelledby="hero-title">
-      <div className="hero__grid" aria-hidden="true" />
-      <div className="hero__stage">
-        <BrainStage />
-      </div>
-
-      <div className="hero__corners" aria-hidden="true">
-        <p className="readout hero__corner hero__corner--tl">
-          MOMENTUM V1.3
-          <br />
-          КТ головного мозга · аксиальная
-        </p>
-        <p className="readout hero__corner hero__corner--tr">
-          W 80 · L 40
-          <br />
-          Срез 15 / 28 · 5,0 мм
-        </p>
-        <div className="hero__corner hero__corner--bl">
-          <span className="hero__scale" />
-          <span className="readout">50 мм</span>
-        </div>
-        <p className="readout hero__corner hero__corner--br">Синтетическая модель, не данные пациента</p>
-      </div>
-
-      <div className="wrap hero__inner">
+      <div className="wrap hero__grid">
         <div className="hero__copy">
-          <motion.p className="hero__tag" {...item(0)}>
-            <span className="hero__tag-dot" aria-hidden="true" />
+          <motion.p className="hero__tag print" {...item(0)}>
+            <span className="hero__notch" aria-hidden="true" />
             AI STROKE DETECTION / V1.3 BETA
           </motion.p>
           <h1 id="hero-title" className="display hero__title">
@@ -194,7 +123,7 @@ export function Hero() {
               Не за часы.
             </motion.span>
           </h1>
-          <motion.p className="lead hero__lead" {...item(3)}>
+          <motion.p className="lead" {...item(3)}>
             Momentum анализирует КТ и МРТ, выделяет зону поражения и формирует понятный отчёт, пока пациент ещё находится в
             аппарате.
           </motion.p>
@@ -208,7 +137,47 @@ export function Hero() {
             PACS / HIS · результат за секунды · работа 24/7
           </motion.p>
         </div>
-        <HeroHud />
+
+        <figure className="hero__fig">
+          <Lightbox flicker className="hero__box">
+            <div className="film hero__film">
+              <Clips />
+              <Wedge />
+              <p className="film__corner film__corner--tl print">
+                MOMENTUM V1.3
+                <br />
+                КТ головного мозга · без контраста
+                <br />
+                Серия 4 · 28 × 5,0 мм
+              </p>
+              <p className="film__corner film__corner--tr print">
+                W 80 · L 40
+                <br />
+                Объёмная реконструкция
+                <br />
+                <span className="hero__live">
+                  <span aria-hidden="true" /> анализ идёт
+                </span>
+              </p>
+              <VolumeStage />
+              <dl className="film__strip" aria-label="Пример результата анализа">
+                {METRICS.map((m) => (
+                  <div key={m.label}>
+                    <dt className="print">{m.label}</dt>
+                    <dd>{m.node}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="film__edge print" aria-hidden="true">
+                MOMENTUM · AI STROKE DETECTION · SER 4 · IMG 15/28 · SYNTHETIC
+              </p>
+            </div>
+          </Lightbox>
+          <figcaption className="hero__caption">
+            <span className="serif">Рис. 1.</span> Диагностика, пока пациент ещё в сканере. Синтетическое исследование, не данные
+            пациента.
+          </figcaption>
+        </figure>
       </div>
     </section>
   )
