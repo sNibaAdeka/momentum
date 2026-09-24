@@ -1,30 +1,29 @@
 /*
- * "Ординаторская" — the radiology reading room.
- * A dim graphite wall, backlit viewboxes, black film, a red grease pencil.
- * Colour is used the way it is used in that room: light to read by, red to mark a finding,
- * blue only for what the software draws.
+ * Momentum — soft clinical white.
+ * The page is a bright, quiet room; the only dark thing on it is the scan itself (film / PACS screen),
+ * the way a monitor is the only dark object on a white desk. Red marks a finding, blue is what the software draws.
  */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* the wall */
-  --wall: #111213;
-  --wall-deep: #0b0c0d;
-  --wall-raised: #17191a;
-  --rule: rgba(236, 233, 226, 0.1);
-  --rule-strong: rgba(236, 233, 226, 0.2);
+  /* surfaces */
+  --wall: #f4f5f5; /* page */
+  --wall-deep: #eceeee; /* sunken bands, footer */
+  --wall-raised: #ffffff; /* cards */
+  --rule: rgba(20, 24, 27, 0.08);
+  --rule-strong: rgba(20, 24, 27, 0.16);
 
-  /* type on the wall — warm paper white, not screen white */
-  --paper: #ece9e2;
-  --paper-dim: #a4a19b;
-  --paper-faint: #78766f;
+  /* type */
+  --paper: #15191c; /* primary text (named for the film scope, where it is paper-white) */
+  --paper-dim: #596166;
+  --paper-faint: #8a9194;
 
-  /* viewbox (negatoscope) */
-  --light: #e3ebef;
-  --light-deep: #c9d4da;
-  --bezel: #232627;
-  --bezel-hi: #3a3e40;
-  --ink: #0f1417; /* text printed on a lit surface */
+  /* viewbox — pale aluminium, cool light */
+  --light: #f6fafc;
+  --light-deep: #dfe9ef;
+  --bezel: #d9dee1;
+  --bezel-hi: #f2f4f5;
+  --ink: #0f1417;
   --ink-dim: #46535a;
 
   /* film */
@@ -32,17 +31,20 @@
   --film-print: rgba(236, 240, 242, 0.62);
 
   /* marks */
-  --pencil: #e8472f; /* grease pencil — findings, delay, loss */
-  --pencil-soft: rgba(232, 71, 47, 0.14);
-  --scan: #4a86ff; /* Momentum's own digital marks + focus */
-  --scan-soft: rgba(74, 134, 255, 0.16);
-  --ok: #5cc8b4; /* used sparingly: “on time”, “online” */
+  --pencil: #d8432c;
+  --pencil-soft: rgba(216, 67, 44, 0.09);
+  --scan: #2f6feb;
+  --scan-soft: rgba(47, 111, 235, 0.12);
+  --ok: #178a74;
 
-  /* request form paper */
-  --form-paper: #eeede7;
-  --form-ink: #161819;
-  --form-ink-dim: #5a5d5e;
-  --form-rule: #b9b8b1;
+  /* paper form */
+  --form-paper: #ffffff;
+  --form-ink: #15191c;
+  --form-ink-dim: #5a6166;
+  --form-rule: #c9cdcf;
+
+  --shadow-soft: 0 1px 2px rgba(16, 24, 32, 0.04), 0 18px 48px -20px rgba(16, 24, 32, 0.18);
+  --shadow-lift: 0 2px 4px rgba(16, 24, 32, 0.05), 0 30px 70px -28px rgba(16, 24, 32, 0.28);
 
   --font-serif: 'Literata', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-sans: 'Geologica', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -70,10 +72,11 @@
   --space-8: 64px;
   --space-9: 96px;
 
-  /* physical radii: film corners, metal bezels — nothing is a pill */
-  --r-film: 3px;
-  --r-bezel: 7px;
-  --r-ctl: 4px;
+  /* soft geometry */
+  --r-film: 12px;
+  --r-bezel: 28px;
+  --r-card: 26px;
+  --r-ctl: 999px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in: cubic-bezier(0.55, 0, 0.78, 0.35);
@@ -82,6 +85,20 @@
 
   --gutter: 16px;
   --nav-h: 64px;
+}
+
+/* Dark scope: film and the PACS screen keep the reading-room palette. */
+.film,
+.viewer {
+  --wall: #000;
+  --wall-raised: #0d0f10;
+  --rule: rgba(236, 233, 226, 0.1);
+  --rule-strong: rgba(236, 233, 226, 0.2);
+  --paper: #ece9e2;
+  --paper-dim: #a4a19b;
+  --paper-faint: #78766f;
+  --pencil: #f0553d;
+  --scan: #5b91ff;
 }
 
 @media (min-width: 768px) {

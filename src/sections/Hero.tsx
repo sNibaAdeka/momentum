@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { MagneticButton, Counter, Lightbox, Wedge, Clips } from '../components/primitives'
+import { LiquidMetalButton } from '../components/ui/liquid-metal-button'
 import { FallbackScan } from '../components/FallbackScan'
 import { easeOut, hasWebGL, isCoarsePointer, isLowPower, isNarrow } from '../lib/env'
 import { fmtDec } from '../lib/format'
@@ -128,7 +129,7 @@ export function Hero() {
             аппарате.
           </motion.p>
           <motion.div className="hero__ctas" {...item(4)}>
-            <MagneticButton href="#contact">Запросить демо</MagneticButton>
+            <LiquidMetalButton href="#contact" label="Запросить демо" />
             <MagneticButton href="#how" variant="ghost">
               Как это работает
             </MagneticButton>

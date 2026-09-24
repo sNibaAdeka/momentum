@@ -4,7 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { CheckCircle2, X } from 'lucide-react'
-import { MagneticButton, ScanReveal } from '../components/primitives'
+import { ScanReveal } from '../components/primitives'
+import { LiquidMetalButton } from '../components/ui/liquid-metal-button'
 import { PLAN_LABEL, choosePlan, usePlan } from '../lib/planStore'
 import { CT_SIZE, paintSlice, WINDOWS } from '../ct/ctSynth'
 import { getSlice } from '../ct/cache'
@@ -206,9 +207,9 @@ export function FinalCta() {
                     Заявка не отправилась: нет связи с сервером. Проверьте интернет и нажмите ещё раз.
                   </p>
                 )}
-                <MagneticButton type="submit" variant="ink" disabled={isSubmitting} className="cta__submit">
-                  {isSubmitting ? 'Отправляем…' : 'Запросить демо'}
-                </MagneticButton>
+                <span className="cta__submit">
+                  <LiquidMetalButton type="submit" disabled={isSubmitting} label={isSubmitting ? 'Отправляем…' : 'Запросить демо'} />
+                </span>
                 <p className="cta__fine">Нажимая кнопку, вы соглашаетесь на обработку контактных данных для связи по демо.</p>
               </motion.form>
             )}

@@ -207,17 +207,27 @@ ol {
   }
 }
 
+/* ---------- soft card ---------- */
+
+.card {
+  position: relative;
+  background: var(--wall-raised);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(20, 24, 27, 0.05);
+}
+
 /* ---------- viewbox (negatoscope) ---------- */
 
 .lightbox {
   position: relative;
   padding: clamp(10px, 1.4vw, 18px);
   border-radius: var(--r-bezel);
-  background: linear-gradient(180deg, var(--bezel-hi) 0%, var(--bezel) 14%, #1a1c1d 100%);
+  background: linear-gradient(180deg, var(--bezel-hi) 0%, var(--bezel) 40%, #cdd3d6 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
-    0 50px 90px -40px rgba(0, 0, 0, 0.9);
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(16, 24, 32, 0.08),
+    var(--shadow-lift);
   isolation: isolate;
 }
 .lightbox__spill {
@@ -225,17 +235,17 @@ ol {
   position: absolute;
   inset: -18% -10%;
   z-index: -1;
-  background: radial-gradient(closest-side, rgba(214, 229, 238, 0.13), rgba(214, 229, 238, 0) 100%);
+  background: radial-gradient(closest-side, rgba(120, 175, 230, 0.2), rgba(120, 175, 230, 0) 100%);
   pointer-events: none;
 }
 .lightbox__panel {
   position: relative;
-  border-radius: 2px;
+  border-radius: 18px;
   background:
     radial-gradient(ellipse 34% 90% at 28% 50%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 100%),
     radial-gradient(ellipse 34% 90% at 72% 50%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 100%),
     linear-gradient(180deg, var(--light) 0%, var(--light-deep) 100%);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25), inset 0 0 40px rgba(120, 140, 150, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(16, 24, 32, 0.06), inset 0 0 36px rgba(120, 160, 190, 0.22);
 }
 .lightbox__off {
   /* a dark veil that flickers away when the tubes start */
@@ -243,7 +253,7 @@ ol {
   inset: 0;
   z-index: 5;
   border-radius: inherit;
-  background: #1a1d1f;
+  background: #b4bcc1;
   pointer-events: none;
   opacity: 0;
 }
@@ -383,14 +393,18 @@ ol {
   color: var(--wall);
 }
 .btn--primary:hover {
-  background: #fff;
+  background: #000;
 }
 .btn--ghost {
   color: var(--paper);
   border: 1px solid var(--rule-strong);
 }
+.btn--ghost {
+  background: rgba(255, 255, 255, 0.6);
+}
 .btn--ghost:hover {
-  border-color: rgba(236, 233, 226, 0.5);
+  border-color: rgba(20, 24, 27, 0.4);
+  background: #fff;
 }
 .btn--ink {
   background: var(--form-ink);

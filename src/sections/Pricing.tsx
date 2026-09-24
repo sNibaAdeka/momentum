@@ -1,5 +1,6 @@
 import { Check } from 'lucide-react'
 import { MagneticButton, ScanReveal, Reveal } from '../components/primitives'
+import { LiquidMetalButton } from '../components/ui/liquid-metal-button'
 import { choosePlan, type Plan } from '../lib/planStore'
 
 interface PlanCard {
@@ -44,7 +45,7 @@ export function Pricing() {
         <div className="plans">
           {PLANS.map((p, i) => (
             <Reveal key={p.id} delay={i * 0.08} className="plans__cell">
-              <article className={`plan${p.featured ? ' plan--featured' : ' film'}`} aria-labelledby={`plan-${p.id}`}>
+              <article className={`plan${p.featured ? ' plan--featured' : ' card'}`} aria-labelledby={`plan-${p.id}`}>
                 {p.featured && <span className="plan__glow" aria-hidden="true" />}
                 <header className="plan__head">
                   <h3 id={`plan-${p.id}`} className="plan__name">
@@ -65,14 +66,15 @@ export function Pricing() {
                     </li>
                   ))}
                 </ul>
-                <MagneticButton
-                  href="#contact"
-                  variant={p.featured ? 'ink' : 'ghost'}
-                  onClick={() => choosePlan(p.id)}
-                  className="plan__cta"
-                >
-                  Запросить демо
-                </MagneticButton>
+                {p.featured ? (
+                  <span className="plan__cta">
+                    <LiquidMetalButton href="#contact" label="Запросить демо" onClick={() => choosePlan(p.id)} />
+                  </span>
+                ) : (
+                  <MagneticButton href="#contact" variant="ghost" onClick={() => choosePlan(p.id)} className="plan__cta">
+                    Запросить демо
+                  </MagneticButton>
+                )}
               </article>
             </Reveal>
           ))}

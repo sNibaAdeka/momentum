@@ -1,4 +1,3 @@
-import { Grain } from './components/primitives'
 import { Nav } from './components/Nav'
 import { ScoutRail } from './components/ScoutRail'
 import { Hero } from './sections/Hero'
@@ -34,7 +33,6 @@ export default function App() {
         <FinalCta />
       </main>
       <Footer />
-      <Grain />
     </>
   )
 }

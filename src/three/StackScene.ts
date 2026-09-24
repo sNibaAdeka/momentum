@@ -30,8 +30,8 @@ uniform vec3 uScanColor;
 varying vec2 vUv;
 void main() {
   vec4 t = texture2D(map, vUv);
-  vec3 col = t.rgb + uScanColor * uScan * 0.55 * t.a;
-  float a = t.a * uOpacity * (0.85 + uScan * 0.9);
+  vec3 col = t.rgb + uScanColor * uScan * 0.16 * t.a;
+  float a = t.a * uOpacity * (0.92 + uScan * 0.3);
   if (a < 0.004) discard;
   gl_FragColor = vec4(col, clamp(a, 0.0, 1.0));
   #include <colorspace_fragment>
@@ -125,7 +125,7 @@ export function createStackScene(host: HTMLElement, opts: BrainSceneOptions): Br
   root.add(stack)
   scene.add(root)
 
-  const css = getComputedStyle(document.documentElement)
+  const css = getComputedStyle(host) // film scope: light-on-dark palette
   const scanColor = new THREE.Color(css.getPropertyValue('--scan').trim() || '#3d8bff')
   const alertColor = new THREE.Color(css.getPropertyValue('--pencil').trim() || '#e8472f')
   const boneColor = new THREE.Color(css.getPropertyValue('--paper').trim() || '#ece9e2')

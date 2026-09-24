@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Counter, Lightbox, PencilUnderline, ScanReveal, Reveal, TiltCard, useDrawn } from '../components/primitives'
+import { Counter, PencilUnderline, ScanReveal, Reveal, TiltCard, useDrawn } from '../components/primitives'
 import { NEURONS_PER_SECOND, useElapsed } from '../lib/clock'
 import { fmtDec, fmtInt } from '../lib/format'
 import { sliceUrl } from '../ct/cache'
@@ -63,9 +63,8 @@ export function Urgency() {
         </div>
 
         <div ref={ref}>
-          <Lightbox className="urg__box">
-            <div className="urg__films">
-              <TiltCard as="article" className="film urg__film urg__film--main" tilt={3}>
+                      <div className="urg__films">
+              <TiltCard as="article" className="card urg__film urg__film--main" tilt={3}>
                 {bg && <img className="urg__bg" src={bg} alt="" aria-hidden="true" />}
                 <p className="urg__figure serif">
                   <Counter to={1.9} duration={1.8} format={(n) => `${fmtDec(n, 1)} млн`} />
@@ -76,7 +75,7 @@ export function Urgency() {
                 <p className="film__source print">Saver J.L., Stroke, 2006</p>
               </TiltCard>
 
-              <TiltCard as="article" className="film urg__film">
+              <TiltCard as="article" className="card urg__film">
                 <div className="urg__row">
                   <p className="urg__figure urg__figure--sm serif">
                     2 <span className="urg__of">из</span> 3
@@ -87,7 +86,7 @@ export function Urgency() {
                 <p className="film__source print">AHA/ASA Guidelines, Acute Ischemic Stroke</p>
               </TiltCard>
 
-              <TiltCard as="article" className="film urg__film">
+              <TiltCard as="article" className="card urg__film">
                 <p className="urg__figure urg__figure--sm serif">
                   <Counter to={890} duration={1.6} format={(n) => `$${fmtInt(n)} млрд`} />
                 </p>
@@ -95,7 +94,6 @@ export function Urgency() {
                 <p className="film__source print">World Stroke Organization, 2025</p>
               </TiltCard>
             </div>
-          </Lightbox>
         </div>
       </div>
     </section>

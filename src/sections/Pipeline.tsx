@@ -232,7 +232,7 @@ function PinnedCard({ step, i, progress, n, active }: { step: Step; i: number; p
   const opacity = useTransform(rel, (r) => 1 - Math.min(Math.abs(r), 1) * 0.55)
   return (
     <motion.article
-      className={`step step--pinned film${active ? ' is-active' : ''}`}
+      className={`step step--pinned card${active ? ' is-active' : ''}`}
       style={{ rotateY, z, opacity, transformPerspective: 1400 }}
       aria-label={`Этап ${step.n}: ${step.title}`}
     >
@@ -246,7 +246,7 @@ function MobileStep({ step }: { step: Step }) {
   const inView = useInView(ref, { margin: '-30% 0px -30% 0px' })
   return (
     <Reveal>
-      <article ref={ref} className={`step film${inView ? ' is-active' : ''}`}>
+      <article ref={ref} className={`step card${inView ? ' is-active' : ''}`}>
         <StepBody step={step} active={inView} />
       </article>
     </Reveal>

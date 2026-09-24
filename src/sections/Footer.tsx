@@ -1,4 +1,5 @@
 import { LogoMark } from '../components/primitives'
+import { CrowdCanvas } from '../components/ui/skiper39'
 import { ANALYSIS_SECONDS, NEURONS_PER_SECOND, useElapsed } from '../lib/clock'
 import { fmtCompact, fmtDuration, plural } from '../lib/format'
 
@@ -54,7 +55,15 @@ export function Footer() {
           <span>© 2026 Momentum</span>
           <a href="#top">Наверх</a>
         </div>
+        <p className="footer__crowd-line">Инсульт случается с обычными людьми. Мы работаем для каждого из них.</p>
       </div>
+      <div className="footer__crowd" aria-hidden="true">
+        <CrowdCanvas />
+      </div>
+      <p className="footer__credit">
+        Анимация толпы — <a href="https://skiper-ui.com" target="_blank" rel="noreferrer">Skiper UI</a>, иллюстрации —{' '}
+        <a href="https://www.openpeeps.com" target="_blank" rel="noreferrer">Open Peeps</a>
+      </p>
     </footer>
   )
 }
